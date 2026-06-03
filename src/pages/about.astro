@@ -1,6 +1,5 @@
 ---
 import Base from "../layouts/Base.astro";
-import PollinationsImg from "../components/PollinationsImg.astro";
 import { CITY_DIRECTORY } from "../lib/geo";
 ---
 
@@ -10,7 +9,6 @@ import { CITY_DIRECTORY } from "../lib/geo";
   canonical="https://suncycle-day3.netlify.app/about"
   ogImage="https://suncycle-day3.netlify.app/og-default.svg"
 >
-  <!-- Hero -->
   <section class="hero">
     <div class="container">
       <div class="hero-grid">
@@ -21,15 +19,53 @@ import { CITY_DIRECTORY } from "../lib/geo";
           </p>
         </div>
         <div class="hero-visual fade-in fade-in-delay-2">
-          <div class="img-wrap">
-            <PollinationsImg
-              prompt="abstract earth globe with sun rays and circadian cycle rings, golden light beams, dark space background, minimalist scientific art, no text"
-              width={800}
-              height={600}
-              alt="Abstract earth with circadian cycle rings"
-              loading="eager"
-            />
-          </div>
+          <svg class="about-earth" viewBox="0 0 400 300" role="img" aria-label="Earth with circadian cycle rings and sun rays in deep space">
+            <defs>
+              <radialGradient id="earthGrad" cx="40%" cy="35%">
+                <stop offset="0%" stop-color="#6ce2d8" stop-opacity="0.4"/>
+                <stop offset="40%" stop-color="#2a6090"/>
+                <stop offset="100%" stop-color="#0c1530"/>
+              </radialGradient>
+              <radialGradient id="sunGlow" cx="50%" cy="50%">
+                <stop offset="0%" stop-color="#f8d494" stop-opacity="0.9"/>
+                <stop offset="30%" stop-color="#f4b860" stop-opacity="0.5"/>
+                <stop offset="100%" stop-color="#f4b860" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <!-- Space bg -->
+            <rect width="400" height="300" fill="#060412"/>
+            <!-- Stars -->
+            <circle cx="20" cy="30" r="1" fill="var(--ink-0)" opacity="0.4"/>
+            <circle cx="350" cy="20" r="0.8" fill="var(--ink-0)" opacity="0.3"/>
+            <circle cx="380" cy="80" r="1.2" fill="var(--ink-0)" opacity="0.35"/>
+            <circle cx="40" cy="250" r="0.8" fill="var(--ink-0)" opacity="0.25"/>
+            <circle cx="360" cy="260" r="1" fill="var(--ink-0)" opacity="0.3"/>
+            <circle cx="200" cy="10" r="0.6" fill="var(--ink-0)" opacity="0.4"/>
+            <!-- Sun rays -->
+            <line x1="300" y1="80" x2="180" y2="160" stroke="#f4b860" stroke-width="1.5" opacity="0.15"/>
+            <line x1="310" y1="60" x2="160" y2="140" stroke="#f4b860" stroke-width="1" opacity="0.1"/>
+            <line x1="305" y1="100" x2="200" y2="180" stroke="#f4b860" stroke-width="1.2" opacity="0.12"/>
+            <!-- Sun -->
+            <circle cx="310" cy="75" r="50" fill="url(#sunGlow)"/>
+            <circle cx="310" cy="75" r="16" fill="#f8d494" opacity="0.8"/>
+            <!-- Circadian rings -->
+            <ellipse cx="120" cy="170" rx="70" ry="18" fill="none" stroke="var(--accent-gold)" stroke-width="1" opacity="0.35" stroke-dasharray="8,4" transform="rotate(-15,120,170)">
+              <animateTransform attributeName="transform" type="rotate" from="-15 120 170" to="345 120 170" dur="12s" repeatCount="indefinite"/>
+            </ellipse>
+            <ellipse cx="120" cy="170" rx="90" ry="24" fill="none" stroke="var(--accent-cyan)" stroke-width="0.8" opacity="0.25" stroke-dasharray="5,6" transform="rotate(20,120,170)">
+              <animateTransform attributeName="transform" type="rotate" from="20 120 170" to="380 120 170" dur="16s" repeatCount="indefinite"/>
+            </ellipse>
+            <ellipse cx="120" cy="170" rx="55" ry="12" fill="none" stroke="var(--accent-sky)" stroke-width="1" opacity="0.3" stroke-dasharray="3,5" transform="rotate(-30,120,170)">
+              <animateTransform attributeName="transform" type="rotate" from="-30 120 170" to="330 120 170" dur="10s" repeatCount="indefinite"/>
+            </ellipse>
+            <!-- Earth -->
+            <circle cx="120" cy="170" r="42" fill="url(#earthGrad)"/>
+            <circle cx="120" cy="170" r="42" fill="none" stroke="var(--accent-cyan)" stroke-width="0.6" opacity="0.3"/>
+            <!-- Continents (abstract) -->
+            <path d="M98,145 Q105,140 115,142 Q120,148 110,155 Q100,152 98,145Z" fill="var(--accent-cyan)" opacity="0.25"/>
+            <path d="M125,148 Q135,142 140,150 Q138,158 128,160 Q122,155 125,148Z" fill="var(--accent-cyan)" opacity="0.2"/>
+            <path d="M100,175 Q108,170 118,178 Q110,185 100,175Z" fill="var(--accent-cyan)" opacity="0.2"/>
+          </svg>
         </div>
       </div>
     </div>
@@ -37,7 +73,6 @@ import { CITY_DIRECTORY } from "../lib/geo";
 
   <section class="container" style="margin-bottom: var(--space-24);">
     <div class="content-narrow">
-      <!-- Philosophy -->
       <article class="panel fade-in" style="margin-bottom: var(--space-8);">
         <h2 style="margin-bottom: var(--space-4);">Philosophy</h2>
         <p style="margin-bottom: var(--space-4); color: var(--ink-2);">
@@ -48,7 +83,6 @@ import { CITY_DIRECTORY } from "../lib/geo";
         </p>
       </article>
 
-      <!-- How it works -->
       <article class="panel fade-in" style="margin-bottom: var(--space-8);">
         <h2 style="margin-bottom: var(--space-4);">How it works</h2>
         <p style="margin-bottom: var(--space-4); color: var(--ink-2);">
@@ -66,7 +100,6 @@ import { CITY_DIRECTORY } from "../lib/geo";
         </div>
       </article>
 
-      <!-- Privacy -->
       <article class="panel fade-in" style="margin-bottom: var(--space-8);">
         <h2 style="margin-bottom: var(--space-4);">Privacy</h2>
         <p style="margin-bottom: var(--space-4); color: var(--ink-2);">
@@ -77,7 +110,6 @@ import { CITY_DIRECTORY } from "../lib/geo";
         </p>
       </article>
 
-      <!-- Sources -->
       <article class="panel fade-in" style="margin-bottom: var(--space-8);">
         <h2 style="margin-bottom: var(--space-4);">Sources</h2>
         <ul style="color: var(--ink-2); line-height: 1.8; padding-left: var(--space-6); margin-bottom: var(--space-4);">
@@ -93,7 +125,6 @@ import { CITY_DIRECTORY } from "../lib/geo";
         </p>
       </article>
 
-      <!-- Cities -->
       <article class="panel fade-in" style="margin-bottom: var(--space-8);">
         <h2 style="margin-bottom: var(--space-4);">Cities in the directory</h2>
         <p style="margin-bottom: var(--space-5); color: var(--ink-2);">
@@ -106,7 +137,6 @@ import { CITY_DIRECTORY } from "../lib/geo";
         </ul>
       </article>
 
-      <!-- Limitations -->
       <article class="panel fade-in">
         <h2 style="margin-bottom: var(--space-4);">Limitations</h2>
         <ul style="color: var(--ink-2); line-height: 1.8; padding-left: var(--space-6);">
@@ -131,20 +161,21 @@ import { CITY_DIRECTORY } from "../lib/geo";
       .hero-grid { grid-template-columns: 1fr; }
       .hero-visual { order: -1; }
     }
-    .hero-visual .img-wrap {
-      border-radius: var(--radius-xl);
-      aspect-ratio: 4/3;
-    }
-    .hero-visual .img-wrap img {
+    .about-earth {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
+      height: auto;
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--line);
+      display: block;
     }
     .tech-stack {
       display: flex;
       gap: var(--space-2);
       flex-wrap: wrap;
       margin-top: var(--space-4);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .about-earth animateTransform { animation: none; }
     }
   </style>
 </Base>

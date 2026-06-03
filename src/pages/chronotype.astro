@@ -1,6 +1,5 @@
 ---
 import Base from "../layouts/Base.astro";
-import PollinationsImg from "../components/PollinationsImg.astro";
 import { CHRONOTYPE_QUESTIONS, CHRONOTYPE_LABELS, scoreChronotype } from "../lib/light";
 ---
 
@@ -10,7 +9,6 @@ import { CHRONOTYPE_QUESTIONS, CHRONOTYPE_LABELS, scoreChronotype } from "../lib
   canonical="https://suncycle-day3.netlify.app/chronotype"
   ogImage="https://suncycle-day3.netlify.app/og-default.svg"
 >
-  <!-- Hero -->
   <section class="hero">
     <div class="container">
       <div class="content-narrow">
@@ -67,14 +65,20 @@ import { CHRONOTYPE_QUESTIONS, CHRONOTYPE_LABELS, scoreChronotype } from "../lib
       </p>
 
       <div class="chrono-cards fade-in">
+        <!-- Lark -->
         <div class="panel">
-          <div class="img-wrap chrono-img">
-            <PollinationsImg
-              prompt="elegant morning lark bird silhouetted against brilliant golden sunrise, minimalist illustration, warm amber tones, dark navy background, no text"
-              width={400}
-              height={400}
-              alt="Morning lark"
-            />
+          <div class="chrono-visual chrono-lark" role="img" aria-label="Morning lark silhouetted against golden sunrise">
+            <svg viewBox="0 0 200 200" class="chrono-svg">
+              <defs>
+                <radialGradient id="larkSun" cx="50%" cy="65%"><stop offset="0%" stop-color="#f8d494"/><stop offset="40%" stop-color="#f4b860"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+              </defs>
+              <circle cx="100" cy="130" r="60" fill="url(#larkSun)" opacity="0.7"/>
+              <circle cx="100" cy="130" r="28" fill="#f8d494" opacity="0.9"/>
+              <line x1="0" y1="180" x2="200" y2="180" stroke="var(--bg-3)" stroke-width="2"/>
+              <rect x="0" y="180" width="200" height="20" fill="var(--bg-3)"/>
+              <!-- Lark silhouette -->
+              <path d="M90,125 Q95,95 100,80 Q105,95 110,125 Q112,115 118,105 Q114,108 112,95 Q108,105 100,100 Q92,105 88,95 Q86,108 82,105 Q88,115 90,125Z" fill="var(--bg-0)"/>
+            </svg>
           </div>
           <h3 style="margin-top: var(--space-4);">Morning Lark</h3>
           <p style="color: var(--ink-2); font-size: var(--text-sm);">You naturally wake before sunrise and feel most alert in the early morning. Your optimal light window starts before dawn. You may struggle with evening social events.</p>
@@ -85,14 +89,28 @@ import { CHRONOTYPE_QUESTIONS, CHRONOTYPE_LABELS, scoreChronotype } from "../lib
           </div>
         </div>
 
+        <!-- Dove -->
         <div class="panel">
-          <div class="img-wrap chrono-img">
-            <PollinationsImg
-              prompt="peaceful white dove in soft warm morning light, minimalist illustration, neutral warm tones, dark background, serene, no text"
-              width={400}
-              height={400}
-              alt="Dove intermediate"
-            />
+          <div class="chrono-visual chrono-dove" role="img" aria-label="Peaceful dove in warm midday light">
+            <svg viewBox="0 0 200 200" class="chrono-svg">
+              <defs>
+                <radialGradient id="doveSun" cx="50%" cy="40%"><stop offset="0%" stop-color="#fce8c0" stop-opacity="0.5"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+              </defs>
+              <rect width="200" height="200" fill="var(--bg-2)"/>
+              <circle cx="100" cy="80" r="90" fill="url(#doveSun)"/>
+              <circle cx="100" cy="80" r="22" fill="#f8e8c8" opacity="0.7"/>
+              <!-- Horizon -->
+              <line x1="0" y1="150" x2="200" y2="150" stroke="var(--bg-3)" stroke-width="1.5"/>
+              <rect x="0" y="150" width="200" height="50" fill="var(--bg-3)"/>
+              <!-- Dove silhouette -->
+              <g transform="translate(100,115)">
+                <ellipse cx="0" cy="0" rx="16" ry="10" fill="var(--ink-2)" opacity="0.8"/>
+                <circle cx="-8" cy="-5" r="6" fill="var(--ink-2)" opacity="0.85"/>
+                <path d="M14,-4 Q22,-12 30,-8 Q24,-4 22,0Z" fill="var(--ink-2)" opacity="0.7"/>
+                <path d="M-14,-4 Q-22,-12 -30,-8 Q-24,-4 -22,0Z" fill="var(--ink-2)" opacity="0.7"/>
+                <polygon points="-6,8 0,14 6,8" fill="var(--accent-amber)" opacity="0.5"/>
+              </g>
+            </svg>
           </div>
           <h3 style="margin-top: var(--space-4);">Dove (Intermediate)</h3>
           <p style="color: var(--ink-2); font-size: var(--text-sm);">You fall in the middle of the spectrum. A standard sunrise-aligned schedule works well. Your alertness is fairly consistent across the day with a natural dip after lunch.</p>
@@ -103,14 +121,39 @@ import { CHRONOTYPE_QUESTIONS, CHRONOTYPE_LABELS, scoreChronotype } from "../lib
           </div>
         </div>
 
+        <!-- Owl -->
         <div class="panel">
-          <div class="img-wrap chrono-img">
-            <PollinationsImg
-              prompt="majestic owl perched under crescent moon with stars, deep blue and silver tones, minimalist illustration, dark night background, no text"
-              width={400}
-              height={400}
-              alt="Night owl"
-            />
+          <div class="chrono-visual chrono-owl" role="img" aria-label="Night owl perched under crescent moon">
+            <svg viewBox="0 0 200 200" class="chrono-svg">
+              <rect width="200" height="200" fill="#08061a"/>
+              <!-- Stars -->
+              <circle cx="30" cy="40" r="1" fill="var(--ink-0)" opacity="0.5"/>
+              <circle cx="160" cy="25" r="1.2" fill="var(--ink-0)" opacity="0.4"/>
+              <circle cx="50" cy="70" r="0.8" fill="var(--ink-0)" opacity="0.3"/>
+              <circle cx="170" cy="55" r="0.8" fill="var(--ink-0)" opacity="0.35"/>
+              <circle cx="140" cy="80" r="0.6" fill="var(--ink-0)" opacity="0.3"/>
+              <!-- Crescent moon -->
+              <circle cx="55" cy="45" r="18" fill="#d4c8f0"/>
+              <circle cx="63" cy="39" r="15" fill="#08061a"/>
+              <!-- Horizon -->
+              <rect x="0" y="160" width="200" height="40" fill="var(--bg-3)"/>
+              <!-- Branch -->
+              <line x1="60" y1="150" x2="140" y2="145" stroke="#3a2a1a" stroke-width="3" stroke-linecap="round"/>
+              <!-- Owl silhouette -->
+              <g transform="translate(100,130)">
+                <ellipse cx="0" cy="-5" rx="14" ry="16" fill="var(--ink-2)" opacity="0.8"/>
+                <circle cx="-6" cy="-14" r="6" fill="var(--accent-sky)" opacity="0.4">
+                  <animate attributeName="opacity" values="0.3;0.6;0.3" dur="4s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="6" cy="-14" r="6" fill="var(--accent-sky)" opacity="0.4">
+                  <animate attributeName="opacity" values="0.5;0.3;0.5" dur="3.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="0" cy="-14" r="3" fill="var(--bg-0)"/>
+                <polygon points="0,-11 2,-9 0,-7" fill="var(--accent-amber)" opacity="0.4"/>
+                <ellipse cx="-8" cy="2" rx="4" ry="8" fill="var(--ink-3)" opacity="0.5"/>
+                <ellipse cx="8" cy="2" rx="4" ry="8" fill="var(--ink-3)" opacity="0.5"/>
+              </g>
+            </svg>
           </div>
           <h3 style="margin-top: var(--space-4);">Night Owl</h3>
           <p style="color: var(--ink-2); font-size: var(--text-sm);">You naturally run later. Your alertness peaks in the evening and you may struggle with early starts. Your light plan shifts later to match your biology.</p>
@@ -123,6 +166,65 @@ import { CHRONOTYPE_QUESTIONS, CHRONOTYPE_LABELS, scoreChronotype } from "../lib
       </div>
     </div>
   </section>
+
+  <!-- Result SVGs (hidden templates, shown via JS) -->
+  <template id="tpl-lark">
+    <svg viewBox="0 0 200 200" class="result-svg">
+      <defs>
+        <radialGradient id="rlarkSun" cx="50%" cy="65%"><stop offset="0%" stop-color="#f8d494"/><stop offset="40%" stop-color="#f4b860"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+      </defs>
+      <rect width="200" height="200" fill="var(--bg-1)"/>
+      <circle cx="100" cy="130" r="70" fill="url(#rlarkSun)" opacity="0.6"/>
+      <circle cx="100" cy="130" r="30" fill="#f8d494" opacity="0.85"/>
+      <rect x="0" y="170" width="200" height="30" fill="var(--bg-3)"/>
+      <path d="M90,120 Q95,90 100,75 Q105,90 110,120 Q112,110 118,100 Q114,103 112,90 Q108,100 100,95 Q92,100 88,90 Q86,103 82,100 Q88,110 90,120Z" fill="var(--bg-0)"/>
+    </svg>
+  </template>
+  <template id="tpl-dove">
+    <svg viewBox="0 0 200 200" class="result-svg">
+      <defs>
+        <radialGradient id="rdoveSun" cx="50%" cy="40%"><stop offset="0%" stop-color="#fce8c0" stop-opacity="0.5"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+      </defs>
+      <rect width="200" height="200" fill="var(--bg-2)"/>
+      <circle cx="100" cy="80" r="90" fill="url(#rdoveSun)"/>
+      <circle cx="100" cy="80" r="24" fill="#f8e8c8" opacity="0.7"/>
+      <rect x="0" y="150" width="200" height="50" fill="var(--bg-3)"/>
+      <g transform="translate(100,115)">
+        <ellipse cx="0" cy="0" rx="16" ry="10" fill="var(--ink-2)" opacity="0.8"/>
+        <circle cx="-8" cy="-5" r="6" fill="var(--ink-2)" opacity="0.85"/>
+        <path d="M14,-4 Q22,-12 30,-8 Q24,-4 22,0Z" fill="var(--ink-2)" opacity="0.7"/>
+        <path d="M-14,-4 Q-22,-12 -30,-8 Q-24,-4 -22,0Z" fill="var(--ink-2)" opacity="0.7"/>
+        <polygon points="-6,8 0,14 6,8" fill="var(--accent-amber)" opacity="0.5"/>
+      </g>
+    </svg>
+  </template>
+  <template id="tpl-owl">
+    <svg viewBox="0 0 200 200" class="result-svg">
+      <rect width="200" height="200" fill="#08061a"/>
+      <circle cx="30" cy="35" r="1" fill="var(--ink-0)" opacity="0.5"/>
+      <circle cx="160" cy="22" r="1.2" fill="var(--ink-0)" opacity="0.4"/>
+      <circle cx="50" cy="65" r="0.8" fill="var(--ink-0)" opacity="0.3"/>
+      <circle cx="170" cy="50" r="0.8" fill="var(--ink-0)" opacity="0.35"/>
+      <circle cx="140" cy="75" r="0.6" fill="var(--ink-0)" opacity="0.3"/>
+      <circle cx="55" cy="42" r="18" fill="#d4c8f0"/>
+      <circle cx="63" cy="36" r="15" fill="#08061a"/>
+      <rect x="0" y="155" width="200" height="45" fill="var(--bg-3)"/>
+      <line x1="65" y1="145" x2="140" y2="142" stroke="#3a2a1a" stroke-width="3" stroke-linecap="round"/>
+      <g transform="translate(100,128)">
+        <ellipse cx="0" cy="-5" rx="14" ry="16" fill="var(--ink-2)" opacity="0.8"/>
+        <circle cx="-6" cy="-14" r="6" fill="var(--accent-sky)" opacity="0.4">
+          <animate attributeName="opacity" values="0.3;0.6;0.3" dur="4s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="6" cy="-14" r="6" fill="var(--accent-sky)" opacity="0.4">
+          <animate attributeName="opacity" values="0.5;0.3;0.5" dur="3.5s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="0" cy="-14" r="3" fill="#08061a"/>
+        <polygon points="0,-11 2,-9 0,-7" fill="var(--accent-amber)" opacity="0.4"/>
+        <ellipse cx="-8" cy="2" rx="4" ry="8" fill="var(--ink-3)" opacity="0.5"/>
+        <ellipse cx="8" cy="2" rx="4" ry="8" fill="var(--ink-3)" opacity="0.5"/>
+      </g>
+    </svg>
+  </template>
 
   <script>
     import { scoreChronotype, CHRONOTYPE_LABELS } from "../lib/light.ts";
@@ -141,16 +243,6 @@ import { CHRONOTYPE_QUESTIONS, CHRONOTYPE_LABELS, scoreChronotype } from "../lib
       owl: "You naturally run later. Your alertness peaks in the evening and you may struggle with early starts. Your light plan shifts later to match your biology.",
     };
 
-    const imagePrompts = {
-      lark: "elegant morning lark bird silhouetted against brilliant golden sunrise, minimalist illustration, warm amber tones, dark navy background, no text",
-      dove: "peaceful white dove in soft warm morning light, minimalist illustration, neutral warm tones, dark background, serene, no text",
-      owl: "majestic owl perched under crescent moon with stars, deep blue and silver tones, minimalist illustration, dark night background, no text",
-    };
-
-    function encodePrompt(p) {
-      return encodeURIComponent(p);
-    }
-
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       const fd = new FormData(form);
@@ -164,10 +256,13 @@ import { CHRONOTYPE_QUESTIONS, CHRONOTYPE_LABELS, scoreChronotype } from "../lib
       resultDesc.textContent = descriptions[result];
       resultLink.href = `/?chronotype=${result}`;
 
-      const prompt = imagePrompts[result];
-      const src = `https://image.pollinations.ai/prompt/${encodePrompt(prompt)}?width=400&height=400&nologo=true`;
-      resultImage.innerHTML = `<img src="${src}" alt="${CHRONOTYPE_LABELS[result]}" width="400" height="400" loading="eager" />`;
-      resultImage.style.display = "block";
+      const tpl = document.getElementById(`tpl-${result}`);
+      if (tpl) {
+        const clone = tpl.content.cloneNode(true);
+        resultImage.innerHTML = "";
+        resultImage.appendChild(clone);
+        resultImage.style.display = "block";
+      }
 
       resultPanel.style.display = "block";
       resultPanel.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -187,19 +282,38 @@ import { CHRONOTYPE_QUESTIONS, CHRONOTYPE_LABELS, scoreChronotype } from "../lib
       border-radius: var(--radius-xl);
       overflow: hidden;
       border: 1px solid var(--line);
+      background: var(--bg-1);
     }
-    .result-visual img {
+    .result-visual .result-svg {
       width: 100%;
       height: auto;
       display: block;
-    }
-    .chrono-img {
       aspect-ratio: 1;
     }
-    .chrono-img img {
+    .chrono-visual {
+      border-radius: var(--radius-lg);
+      aspect-ratio: 1;
+      overflow: hidden;
+      border: 1px solid var(--line);
+    }
+    .chrono-svg {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      display: block;
+    }
+    .chrono-lark {
+      background: linear-gradient(180deg, #1a1030 0%, #3a2040 40%, #6e4030 80%, #3a2010 100%);
+    }
+    .chrono-dove {
+      background: var(--bg-2);
+    }
+    .chrono-owl {
+      background: #08061a;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .chrono-svg animate { animation: none; }
+      .result-svg animate { animation: none; }
     }
   </style>
 </Base>

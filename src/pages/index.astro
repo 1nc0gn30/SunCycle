@@ -1,8 +1,8 @@
 ---
 import Base from "../layouts/Base.astro";
-import PollinationsImg from "../components/PollinationsImg.astro";
+import CustomSelect from "../components/CustomSelect.astro";
 import { CITY_DIRECTORY } from "../lib/geo";
-import { CHRONOTYPE_LABELS, type Chronotype } from "../lib/light";
+import { CHRONOTYPE_LABELS, CHRONOTYPE_QUESTIONS, type Chronotype } from "../lib/light";
 import { computeSolarDay, formatTime } from "../lib/sun";
 
 const cities = CITY_DIRECTORY;
@@ -11,6 +11,36 @@ const chronotypes: Chronotype[] = ["lark", "dove", "owl"];
 const today = new Date();
 const defaultCity = cities[0];
 const defaultSolar = computeSolarDay(today, defaultCity.lat, defaultCity.lon, defaultCity.timezone);
+
+const cityOptions = cities.map((c) => ({
+  value: `${c.lat},${c.lon},${c.timezone}`,
+  label: `${c.city}, ${c.region}`,
+  sub: c.country,
+  group: c.country,
+}));
+
+const chronotypeOptions = chronotypes.map((ct) => ({
+  value: ct,
+  label: CHRONOTYPE_LABELS[ct],
+}));
+
+const defaultCityValue = `${defaultCity.lat},${defaultCity.lon},${defaultCity.timezone}`;
+
+// Did You Know facts
+const facts = [
+  "Morning light advances your circadian clock — exposure within 1h of waking shifts it earlier by up to 30 min/day.",
+  "ipRGCs (intrinsically photosensitive retinal ganglion cells) are 10,000× less sensitive to red light than blue.",
+  "Two hours of outdoor light daily is linked to a 40% reduction in sleep onset latency.",
+  "Melatonin suppression begins at just 30 lux of 480nm light — about the brightness of a smartphone at night.",
+  "Your circadian rhythm naturally runs ~24.2 hours. Morning light corrects this drift every day.",
+  "The suprachiasmatic nucleus contains only ~20,000 neurons but orchestrates clocks in nearly every organ.",
+  "Shift workers have a 25-40% higher risk of metabolic disorders due to circadian misalignment.",
+  "Golden hour light (~2,700K color temperature) has low melanopic content — ideal for evening exposure.",
+  "Blue hour after sunset provides enough melanopic stimulus to delay sleep onset by 40+ minutes.",
+  "Children have larger pupils and more transparent lenses — they receive 2-3× more circadian-effective light than adults.",
+  "The CIE S 026:2018 standard defines five α-opic illuminances; melanopic-EDI is the key metric for circadian effects.",
+  "Spending 30 minutes outdoors in morning light can reduce depression scores by up to 40% in clinical studies.",
+] as const;
 ---
 
 <Base
@@ -19,8 +49,8 @@ const defaultSolar = computeSolarDay(today, defaultCity.lat, defaultCity.lon, de
   canonical="https://suncycle-day3.netlify.app/"
   ogImage="https://suncycle-day3.netlify.app/og-default.svg"
 >
-  <!-- Hero -->
-  <section class="hero">
+  <!-- Hero with CSS gradient sunrise -->
+  <section class="hero hero-sunrise">
     <div class="container">
       <div class="hero-grid">
         <div class="hero-text">
@@ -36,14 +66,17 @@ const defaultSolar = computeSolarDay(today, defaultCity.lat, defaultCity.lon, de
           </div>
         </div>
         <div class="hero-visual fade-in fade-in-delay-2">
-          <div class="img-wrap">
-            <PollinationsImg
-              prompt="abstract golden sunrise aurora over dark ocean waves, warm amber and deep indigo, cinematic lighting, minimalist digital art, high contrast, no text"
-              width={800}
-              height={600}
-              alt="Abstract golden sunrise aurora over dark ocean"
-              loading="eager"
-            />
+          <div class="sunrise-scene" role="img" aria-label="Animated sunrise gradient representing circadian light">
+            <div class="sunrise-sky">
+              <div class="sunrise-sun"></div>
+              <div class="sunrise-glow"></div>
+              <div class="sunrise-horizon"></div>
+            </div>
+            <div class="sunrise-waves">
+              <div class="wave wave-1"></div>
+              <div class="wave wave-2"></div>
+              <div class="wave wave-3"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -60,15 +93,42 @@ const defaultSolar = computeSolarDay(today, defaultCity.lat, defaultCity.lon, de
         </div>
         <div>
           <div class="stat-value">480nm</div>
-          <div class="stat-label">ipRGC peak</div>
+          <div class="stat-label">ipRGC peak sensitivity</div>
         </div>
         <div>
           <div class="stat-value">30m</div>
-          <div class="stat-label">Morning bright light</div>
+          <div class="stat-label">Morning bright light (min)</div>
         </div>
         <div>
           <div class="stat-value">0</div>
           <div class="stat-label">APIs called</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Did You Know carousel -->
+  <section class="section" style="padding-block: var(--space-10);">
+    <div class="container">
+      <div class="facts-carousel fade-in" id="facts-carousel">
+        <div class="facts-header">
+          <span class="facts-icon" aria-hidden="true">💡</span>
+          <span class="facts-label">Did you know?</span>
+          <span class="facts-counter" id="facts-counter">1/{facts.length}</span>
+        </div>
+        <p class="facts-text" id="facts-text">{facts[0]}</p>
+        <div class="facts-nav">
+          <button class="facts-btn" id="facts-prev" aria-label="Previous fact">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <div class="facts-dots" id="facts-dots">
+            {facts.map((_, i) => (
+              <span class={`facts-dot${i === 0 ? " active" : ""}`} data-index={i}></span>
+            ))}
+          </div>
+          <button class="facts-btn" id="facts-next" aria-label="Next fact">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
         </div>
       </div>
     </div>
@@ -87,11 +147,11 @@ const defaultSolar = computeSolarDay(today, defaultCity.lat, defaultCity.lon, de
       <div class="step-cards fade-in">
         <div class="step-card">
           <h4>Choose your location</h4>
-          <p style="color: var(--ink-2); font-size: var(--text-sm);">Pick a city, let your browser locate you, or enter coordinates manually. Your data never leaves the browser.</p>
+          <p style="color: var(--ink-2); font-size: var(--text-sm);">Pick a city from our directory, let your browser locate you, or enter coordinates manually. Your data never leaves the browser.</p>
         </div>
         <div class="step-card">
           <h4>Compute solar events</h4>
-          <p style="color: var(--ink-2); font-size: var(--text-sm);">SunCycle calculates your exact sunrise, sunset, solar noon, twilight, golden hour, and blue hour from real solar geometry.</p>
+          <p style="color: var(--ink-2); font-size: var(--text-sm);">SunCycle calculates your exact sunrise, sunset, solar noon, twilight, golden hour, and blue hour from real solar geometry (NOAA/Spencer algorithm).</p>
         </div>
         <div class="step-card">
           <h4>Get your prescription</h4>
@@ -114,15 +174,16 @@ const defaultSolar = computeSolarDay(today, defaultCity.lat, defaultCity.lon, de
       <div class="planner-grid">
         <aside class="panel panel-glow fade-in" style="position: sticky; top: 88px;">
           <h3 style="margin-bottom: var(--space-5); font-size: var(--text-xl);">Your location</h3>
+
           <div style="margin-bottom: var(--space-5);">
-            <label class="label" for="city-select">City</label>
-            <select id="city-select" class="input">
-              {cities.map((c) => (
-                <option value={`${c.lat},${c.lon},${c.timezone}`} selected={c.city === defaultCity.city}>
-                  {c.city}, {c.region} · {c.country}
-                </option>
-              ))}
-            </select>
+            <CustomSelect
+              id="city-select"
+              options={cityOptions}
+              selectedValue={defaultCityValue}
+              placeholder="Search cities…"
+              searchable={true}
+              label="City"
+            />
           </div>
 
           <div style="margin-bottom: var(--space-5);">
@@ -131,12 +192,14 @@ const defaultSolar = computeSolarDay(today, defaultCity.lat, defaultCity.lon, de
           </div>
 
           <div style="margin-bottom: var(--space-6);">
-            <label class="label" for="chronotype-select">Chronotype</label>
-            <select id="chronotype-select" class="input">
-              {chronotypes.map((ct) => (
-                <option value={ct} selected={ct === "dove"}>{CHRONOTYPE_LABELS[ct]}</option>
-              ))}
-            </select>
+            <CustomSelect
+              id="chronotype-select"
+              options={chronotypeOptions}
+              selectedValue="dove"
+              placeholder="Select chronotype"
+              searchable={false}
+              label="Chronotype"
+            />
             <p class="note" style="margin-top: var(--space-3);">
               Not sure? Take the <a href="/chronotype">chronotype quiz</a>.
             </p>
@@ -153,6 +216,48 @@ const defaultSolar = computeSolarDay(today, defaultCity.lat, defaultCity.lon, de
           <div id="geo-status" class="note" style="display: none;"></div>
 
           <hr class="section-divider" style="margin-block: var(--space-6);" />
+
+          <!-- Seasonal daylight preview -->
+          <div style="margin-bottom: var(--space-6);">
+            <h4 style="font-size: var(--text-sm); color: var(--ink-3); margin-bottom: var(--space-3); text-transform: uppercase; letter-spacing: 0.04em;">
+              Seasonal daylight
+            </h4>
+            <div id="seasonal-chart" class="seasonal-chart">
+              <div class="seasonal-bar" id="bar-winter" style="flex: 1;"><span>Dec</span></div>
+              <div class="seasonal-bar" id="bar-equinox" style="flex: 2;"><span>Mar</span></div>
+              <div class="seasonal-bar" id="bar-summer" style="flex: 3;"><span>Jun</span></div>
+              <div class="seasonal-bar" id="bar-autumn" style="flex: 2;"><span>Sep</span></div>
+            </div>
+            <p class="note" style="margin-top: var(--space-2); text-align: center;" id="seasonal-note">Daylight varies by season at your latitude</p>
+          </div>
+
+          <!-- Melatonin rhythm preview -->
+          <div style="margin-bottom: var(--space-6);">
+            <h4 style="font-size: var(--text-sm); color: var(--ink-3); margin-bottom: var(--space-3); text-transform: uppercase; letter-spacing: 0.04em;">
+              Melatonin rhythm
+            </h4>
+            <div class="melatonin-chart" id="melatonin-chart" aria-label="Melatonin rhythm over 24 hours">
+              <svg viewBox="0 0 200 60" preserveAspectRatio="none" class="melatonin-svg">
+                <defs>
+                  <linearGradient id="melGrad" x1="0" y1="1" x2="1" y2="1">
+                    <stop offset="0%" stop-color="var(--bg-3)"/>
+                    <stop offset="25%" stop-color="var(--accent-sky)" stop-opacity="0.3"/>
+                    <stop offset="50%" stop-color="var(--accent-sky)" stop-opacity="0.15"/>
+                    <stop offset="68%" stop-color="var(--bg-3)"/>
+                    <stop offset="78%" stop-color="var(--accent-lavender)" stop-opacity="0.25"/>
+                    <stop offset="100%" stop-color="var(--accent-lavender)" stop-opacity="0.6"/>
+                  </linearGradient>
+                </defs>
+                <path id="mel-path" d="M0,55 Q25,55 45,48 Q60,40 75,38 Q90,36 100,40 Q115,48 130,52 Q145,55 155,50 Q170,42 185,30 Q200,20 200,20 L200,60 L0,60 Z" fill="url(#melGrad)"/>
+              </svg>
+              <div class="melatonin-labels">
+                <span>06:00</span>
+                <span>12:00</span>
+                <span>18:00</span>
+                <span>00:00</span>
+              </div>
+            </div>
+          </div>
 
           <div id="share-wrap" class="share" style="display: none;">
             <span class="label" style="margin: 0;">Share plan</span>
@@ -231,165 +336,156 @@ const defaultSolar = computeSolarDay(today, defaultCity.lat, defaultCity.lon, de
       <div class="feature-grid fade-in">
         <div class="panel">
           <h4>🌅 Solar noon precision</h4>
-          <p style="color: var(--ink-2); font-size: var(--text-sm);">Sunrise, sunset, twilight, golden hour, and blue hour computed from your exact latitude and longitude using the NOAA solar position model.</p>
+          <p style="color: var(--ink-2); font-size: var(--text-sm);">Sunrise, sunset, twilight, golden hour, and blue hour computed from your exact latitude and longitude using the NOAA solar position model — accurate to ±1 minute.</p>
         </div>
         <div class="panel">
           <h4>🔬 Photobiology-backed</h4>
-          <p style="color: var(--ink-2); font-size: var(--text-sm);">Light prescriptions follow CIE S 026:2018 melanopic-EDI standards and research by Brainard, Figueiro, Zeitzer, and Provencio.</p>
+          <p style="color: var(--ink-2); font-size: var(--text-sm);">Light prescriptions follow CIE S 026:2018 melanopic-EDI standards and research by Brainard (ipRGC sensitivity), Figueiro (morning light), and Zeitzer (evening avoidance).</p>
         </div>
         <div class="panel">
           <h4>🦉 Chronotype-aware</h4>
-          <p style="color: var(--ink-2); font-size: var(--text-sm);">Morning lark, dove, or night owl? Your chronotype shifts every window so the schedule matches your biology, not a clock.</p>
+          <p style="color: var(--ink-2); font-size: var(--text-sm);">Morning lark, dove, or night owl? Your chronotype shifts every window so the schedule matches your biology, not an arbitrary 9-to-5 clock.</p>
         </div>
         <div class="panel">
           <h4>🔒 Zero data collection</h4>
-          <p style="color: var(--ink-2); font-size: var(--text-sm);">No accounts, no cookies, no analytics, no third-party APIs. Your location stays in your browser. Share plans via URL if you choose.</p>
+          <p style="color: var(--ink-2); font-size: var(--text-sm);">No accounts, no cookies, no analytics, no third-party APIs. Your location stays in your browser. Share plans via URL if you choose — entirely opt-in.</p>
         </div>
         <div class="panel">
           <h4>⚡ Instant deep links</h4>
-          <p style="color: var(--ink-2); font-size: var(--text-sm);">Every plan generates a shareable URL with your coordinates, date, and chronotype. Send it to a friend or save it for later.</p>
+          <p style="color: var(--ink-2); font-size: var(--text-sm);">Every plan generates a shareable URL with your coordinates, date, and chronotype. Send it to a friend or bookmark it for later reference.</p>
         </div>
         <div class="panel">
-          <h4>📱 Works everywhere</h4>
-          <p style="color: var(--ink-2); font-size: var(--text-sm);">Fully responsive, works offline after first load, and runs on any device with a modern browser. No app store needed.</p>
+          <h4>🌍 37 cities & counting</h4>
+          <p style="color: var(--ink-2); font-size: var(--text-sm);">Pre-loaded directory spanning six continents with valid IANA timezones. Use browser geolocation for anywhere not listed.</p>
         </div>
       </div>
     </div>
   </section>
 
   <hr class="section-divider" />
-
-  <!-- Quote -->
-  <section class="section">
-    <div class="container">
-      <div class="content-narrow fade-in">
-        <blockquote class="blockquote">
-          “Light is the most powerful synchronizer of the human circadian clock. A thirty-minute walk outdoors after sunrise can advance your phase by over an hour.”
-          <cite>— Mariana Figueiro, Lighting Research Center, 2017</cite>
-        </blockquote>
-      </div>
-    </div>
-  </section>
-
-  <hr class="section-divider" />
-
-  <!-- FAQ -->
-  <section class="section">
-    <div class="container">
-      <div class="content-narrow">
-        <h2 class="fade-in" style="text-align: center; margin-bottom: var(--space-8);">
-          Frequently asked <em>questions</em>
-        </h2>
-        <div class="faq-grid fade-in">
-          <details class="faq">
-            <summary>Is this medical advice?</summary>
-            <div class="faq-body">
-              <p>No. SunCycle is a population-level starting point based on published photobiology research. It is not a substitute for personalized medical advice from a sleep specialist or clinician. If you have a sleep disorder, consult a professional.</p>
-            </div>
-          </details>
-          <details class="faq">
-            <summary>How accurate are the sunrise and sunset times?</summary>
-            <div class="faq-body">
-              <p>SunCycle uses the NOAA low-precision solar position model (Spencer's equations). For non-polar latitudes, it is accurate to within ~1 minute. Polar regions may see larger deviations near solstices.</p>
-            </div>
-          </details>
-          <details class="faq">
-            <summary>What is melanopic-EDI?</summary>
-            <div class="faq-body">
-              <p>Melanopic Equivalent Daylight Illuminance (mel-EDI) is the CIE S 026:2018 standard metric for circadian-effective light. It weights illuminance by the ipRGC action spectrum, which peaks near 480 nm. A 470 nm LED at ~100 lux is roughly 100 melanopic-EDI.</p>
-            </div>
-          </details>
-          <details class="faq">
-            <summary>Does it work for shift workers?</summary>
-            <div class="faq-body">
-              <p>Not yet. Version 1.0 anchors prescriptions to local sunrise and sunset. Shift-work planning is on the roadmap. For now, night-shift workers may benefit from the blue-light cutoff guidance.</p>
-            </div>
-          </details>
-          <details class="faq">
-            <summary>How is my location handled?</summary>
-            <div class="faq-body">
-              <p>Browser geolocation is used only if you explicitly click "Use my location." Coordinates are processed entirely in your browser. We do not run a server, store your location, or use cookies.</p>
-            </div>
-          </details>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- CTA -->
   <section class="cta-section">
     <div class="container">
-      <div class="content-narrow fade-in">
-        <h2 style="margin-bottom: var(--space-4);">Ready to align your <em>circadian rhythm</em>?</h2>
-        <p style="color: var(--ink-2); margin-bottom: var(--space-8);">It takes 30 seconds. No account. No tracking. Just light, geometry, and you.</p>
-        <a href="#planner" class="btn btn-primary" style="font-size: var(--text-lg); padding: var(--space-4) var(--space-8);">Build my light plan</a>
+      <h2 class="fade-in">Ready to sync with the <em>sun</em>?</h2>
+      <p class="fade-in" style="color: var(--ink-2); margin-top: var(--space-4);">Start planning your ideal light day. Free. Forever.</p>
+      <div class="fade-in" style="margin-top: var(--space-8);">
+        <a href="#planner" class="btn btn-primary" style="font-size: var(--text-lg);">Build my light plan →</a>
       </div>
     </div>
   </section>
+</Base>
 
-  <script>
-    import { computeSolarDay, formatTime } from "../lib/sun.ts";
-    import { derivePrescription } from "../lib/light.ts";
-    import { readStateFromUrl, writeStateToUrl } from "../lib/url-state.ts";
-    import { CITY_DIRECTORY, nearestCity, guessTimezoneFromLongitude } from "../lib/geo.ts";
+<script>
+  import { computeSolarDay, formatTime, minutesFromMidnight, formatDate } from "../lib/sun.ts";
+  import { derivePrescription, CHRONOTYPE_LABELS } from "../lib/light.ts";
+  import { readStateFromUrl, writeStateToUrl } from "../lib/url-state.ts";
+  import { CITY_DIRECTORY, nearestCity, guessTimezoneFromLongitude } from "../lib/geo.ts";
 
-    const citySelect = document.getElementById("city-select");
-    const dateInput = document.getElementById("date-input");
-    const chronotypeSelect = document.getElementById("chronotype-select");
+  const FACTS = [
+    "Morning light advances your circadian clock — exposure within 1h of waking shifts it earlier by up to 30 min/day.",
+    "ipRGCs (intrinsically photosensitive retinal ganglion cells) are 10,000× less sensitive to red light than blue.",
+    "Two hours of outdoor light daily is linked to a 40% reduction in sleep onset latency.",
+    "Melatonin suppression begins at just 30 lux of 480nm light — about the brightness of a smartphone at night.",
+    "Your circadian rhythm naturally runs ~24.2 hours. Morning light corrects this drift every day.",
+    "The suprachiasmatic nucleus contains only ~20,000 neurons but orchestrates clocks in nearly every organ.",
+    "Shift workers have a 25-40% higher risk of metabolic disorders due to circadian misalignment.",
+    "Golden hour light (~2,700K color temperature) has low melanopic content — ideal for evening exposure.",
+    "Blue hour after sunset provides enough melanopic stimulus to delay sleep onset by 40+ minutes.",
+    "Children have larger pupils and more transparent lenses — they receive 2-3× more circadian-effective light than adults.",
+    "The CIE S 026:2018 standard defines five α-opic illuminances; melanopic-EDI is the key metric for circadian effects.",
+    "Spending 30 minutes outdoors in morning light can reduce depression scores by up to 40% in clinical studies.",
+  ];
+
+  // Did You Know carousel
+  function initFacts() {
+    const textEl = document.getElementById("facts-text");
+    const counter = document.getElementById("facts-counter");
+    const dots = document.getElementById("facts-dots");
+    const prev = document.getElementById("facts-prev");
+    const next = document.getElementById("facts-next");
+    if (!textEl || !counter || !dots) return;
+
+    let idx = 0;
+    function update() {
+      textEl.textContent = FACTS[idx];
+      counter.textContent = `${idx + 1}/${FACTS.length}`;
+      dots.querySelectorAll(".facts-dot").forEach((d, i) => {
+        d.classList.toggle("active", i === idx);
+      });
+    }
+    prev?.addEventListener("click", () => { idx = (idx - 1 + FACTS.length) % FACTS.length; update(); });
+    next?.addEventListener("click", () => { idx = (idx + 1) % FACTS.length; update(); });
+    dots.querySelectorAll(".facts-dot").forEach((d) => {
+      d.addEventListener("click", () => { idx = Number((d as HTMLElement).dataset.index); update(); });
+    });
+    let autoAdvance = setInterval(() => { idx = (idx + 1) % FACTS.length; update(); }, 6000);
+    [prev, next, ...dots.querySelectorAll(".facts-dot")].forEach((el) => {
+      el?.addEventListener("click", () => { clearInterval(autoAdvance); autoAdvance = setInterval(() => { idx = (idx + 1) % FACTS.length; update(); }, 6000); });
+    });
+  }
+
+  // Planner logic
+  function initPlanner() {
+    const citySelectHidden = document.getElementById("city-select");
+    const chronotypeSelectHidden = document.getElementById("chronotype-select");
+    const dateInput = document.getElementById("date-input") as HTMLInputElement;
     const locateBtn = document.getElementById("locate-btn");
     const geoStatus = document.getElementById("geo-status");
-    const windowsList = document.getElementById("windows-list");
     const shareWrap = document.getElementById("share-wrap");
     const shareUrl = document.getElementById("share-url");
 
-    const sun = document.getElementById("timeline-sun");
     const barMorning = document.getElementById("bar-morning");
     const barMidday = document.getElementById("bar-midday");
     const barEvening = document.getElementById("bar-evening");
     const barBlue = document.getElementById("bar-blue");
+    const timelineSun = document.getElementById("timeline-sun");
+    const windowsList = document.getElementById("windows-list");
     const markerSunrise = document.getElementById("marker-sunrise");
     const markerSunset = document.getElementById("marker-sunset");
     const markerNow = document.getElementById("marker-now");
 
-    let state = {
-      lat: CITY_DIRECTORY[0].lat,
-      lon: CITY_DIRECTORY[0].lon,
-      tz: CITY_DIRECTORY[0].timezone,
+    const seasonalBarWinter = document.getElementById("bar-winter");
+    const seasonalBarEquinox = document.getElementById("bar-equinox");
+    const seasonalBarSummer = document.getElementById("bar-summer");
+    const seasonalBarAutumn = document.getElementById("bar-autumn");
+    const seasonalNote = document.getElementById("seasonal-note");
+
+    const melPath = document.getElementById("mel-path");
+
+    const state = {
+      lat: parseFloat(citySelectHidden?.value?.split(",")[0] ?? "0"),
+      lon: parseFloat(citySelectHidden?.value?.split(",")[1] ?? "0"),
+      tz: citySelectHidden?.value?.split(",")[2] ?? "America/New_York",
       date: new Date(),
-      chronotype: "dove",
+      chronotype: "dove" as string,
     };
 
-    function parseCity(val) {
-      const [lat, lon, tz] = val.split(",");
-      return { lat: Number(lat), lon: Number(lon), tz };
+    if (citySelectHidden?.value) {
+      const parts = citySelectHidden.value.split(",");
+      if (parts.length >= 3) {
+        state.lat = parseFloat(parts[0]);
+        state.lon = parseFloat(parts[1]);
+        state.tz = parts[2];
+      }
     }
 
-    function dateToInput(d) {
-      const y = d.getFullYear();
-      const m = String(d.getMonth() + 1).padStart(2, "0");
-      const day = String(d.getDate()).padStart(2, "0");
-      return `${y}-${m}-${day}`;
+    function parseCity(v: string) {
+      const p = v.split(",");
+      return { lat: parseFloat(p[0]), lon: parseFloat(p[1]), tz: p[2] };
     }
 
-    function inputToDate(str) {
-      const [y, m, d] = str.split("-").map(Number);
-      return new Date(y, m - 1, d);
-    }
+    function inputToDate(v: string) { const [y,m,d] = v.split("-").map(Number); return new Date(y,m-1,d); }
+    function dateToInput(d: Date) { const y = d.getFullYear(); const m = String(d.getMonth()+1).padStart(2,"0"); const day = String(d.getDate()).padStart(2,"0"); return `${y}-${m}-${day}`; }
 
-    function minutesFromMidnight(d) {
-      return d.getHours() * 60 + d.getMinutes();
-    }
-
-    function pct(minutes) {
-      return Math.max(0, Math.min(100, (minutes / 1440) * 100));
-    }
+    function pct(minutes: number) { return Math.max(0, Math.min(100, (minutes / 1440) * 100)); }
 
     function updateTimeline(solar, prescription) {
       const sunriseMin = solar.sunrise ? minutesFromMidnight(solar.sunrise) : 360;
       const sunsetMin = solar.sunset ? minutesFromMidnight(solar.sunset) : 1080;
-      const noonMin = minutesFromMidnight(solar.solarNoon);
+      const noonMin = solar.solarNoon ? minutesFromMidnight(solar.solarNoon) : 720;
 
-      sun.style.setProperty("--sun-pct", `${pct(noonMin)}%`);
+      timelineSun.style.setProperty("--sun-pct", `${pct(noonMin)}%`);
 
       const mStart = prescription[0].start ? minutesFromMidnight(prescription[0].start) : sunriseMin;
       const mEnd = prescription[0].end ? minutesFromMidnight(prescription[0].end) : mStart + 30;
@@ -432,11 +528,76 @@ const defaultSolar = computeSolarDay(today, defaultCity.lat, defaultCity.lon, de
       `).join("");
     }
 
+    function updateSeasonal() {
+      const lat = state.lat;
+      const absLat = Math.abs(lat);
+
+      // Approximate daylight hours for solstices/equinoxes at this latitude
+      function estDaylight(declination: number): number {
+        const latRad = lat * Math.PI / 180;
+        const decRad = declination * Math.PI / 180;
+        const cosTerm = -Math.tan(latRad) * Math.tan(decRad);
+        const ha = Math.acos(Math.max(-1, Math.min(1, cosTerm)));
+        return (2 * ha * 180 / Math.PI) / 15; // hours
+      }
+
+      const winterDL = estDaylight(-23.44);  // Dec solstice
+      const equinoxDL = estDaylight(0);       // Mar/Sep equinox
+      const summerDL = estDaylight(23.44);    // Jun solstice
+
+      const maxDL = Math.max(winterDL, equinoxDL, summerDL, 12);
+      const scale = 100 / maxDL;
+
+      seasonalBarWinter.style.flex = String(Math.max(0.5, winterDL * scale / 25));
+      seasonalBarEquinox.style.flex = String(Math.max(0.5, equinoxDL * scale / 25));
+      seasonalBarSummer.style.flex = String(Math.max(0.5, summerDL * scale / 25));
+      seasonalBarAutumn.style.flex = String(Math.max(0.5, equinoxDL * scale / 25));
+
+      const labels = lat >= 0 ? ["Dec", "Mar", "Jun", "Sep"] : ["Jun", "Sep", "Dec", "Mar"];
+      [seasonalBarWinter, seasonalBarEquinox, seasonalBarSummer, seasonalBarAutumn].forEach((bar, i) => {
+        const span = bar?.querySelector("span");
+        if (span) span.textContent = labels[i];
+      });
+
+      const diff = Math.abs(summerDL - winterDL);
+      if (diff < 1.5) {
+        seasonalNote.textContent = `Near the equator — daylight stays ~${equinoxDL.toFixed(1)}h year-round`;
+      } else if (diff > 8) {
+        seasonalNote.textContent = `High latitude — daylight ranges from ${winterDL.toFixed(1)}h to ${summerDL.toFixed(1)}h`;
+      } else {
+        seasonalNote.textContent = `Daylight varies from ${winterDL.toFixed(0)}h (winter) to ${summerDL.toFixed(0)}h (summer)`;
+      }
+    }
+
+    function updateMelatonin(solar) {
+      if (!melPath) return;
+      const sunsetMin = solar.sunset ? minutesFromMidnight(solar.sunset) : 1080;
+      const onsetPct = sunsetMin / 1440;
+      const risePct = Math.max(0, (sunsetMin + 120) / 1440);
+      const peakPct = Math.min(1, (sunsetMin + 360) / 1440);
+      const fallPct = solar.sunrise ? minutesFromMidnight(solar.sunrise) / 1440 : 0.25;
+
+      // Build SVG path — low during day, rises after sunset, peaks mid-sleep, drops at sunrise
+      const x0 = fallPct * 200;
+      const x1 = onsetPct * 200;
+      const x2 = risePct * 200;
+      const x3 = peakPct * 200;
+
+      // Handle wrap-around (if peak is past midnight)
+      const d = peakPct < onsetPct
+        ? `M0,55 Q${x3/2},55 ${x3},30 Q${x3*1.2},20 ${x0},40 Q${(x0+x1)/2},55 ${x1},52 Q${(x1+x2)/2},45 ${x2},38 Q${(x2+200)/2},35 200,30 L200,60 L0,60 Z`
+        : `M0,55 Q${x0*0.5},50 ${x0},38 Q${(x0+x1)/2},55 ${x1},52 Q${(x1+x2)/2},45 ${x2},35 Q${(x2+x3)/2},28 ${x3},30 Q${(x3+200)/2},35 200,30 L200,60 L0,60 Z`;
+
+      melPath.setAttribute("d", d);
+    }
+
     function refresh() {
       const solar = computeSolarDay(state.date, state.lat, state.lon, state.tz);
-      const prescription = derivePrescription(solar, state.chronotype);
+      const prescription = derivePrescription(solar, state.chronotype as any);
       updateTimeline(solar, prescription);
       renderWindows(prescription);
+      updateSeasonal();
+      updateMelatonin(solar);
 
       const url = writeStateToUrl({ lat: state.lat, lon: state.lon, tz: state.tz }, `${location.origin}${location.pathname}`);
       const full = `${url}&date=${dateToInput(state.date)}&chronotype=${state.chronotype}`;
@@ -444,25 +605,26 @@ const defaultSolar = computeSolarDay(today, defaultCity.lat, defaultCity.lon, de
       shareWrap.style.display = "flex";
     }
 
-    citySelect.addEventListener("change", (e) => {
-      const c = parseCity(e.target.value);
+    // Listen for changes on hidden inputs (set by CustomSelect)
+    citySelectHidden?.addEventListener("change", () => {
+      const c = parseCity(citySelectHidden.value);
       state.lat = c.lat;
       state.lon = c.lon;
       state.tz = c.tz;
       refresh();
     });
 
-    dateInput.addEventListener("change", (e) => {
-      state.date = inputToDate(e.target.value);
+    dateInput?.addEventListener("change", (e) => {
+      state.date = inputToDate((e.target as HTMLInputElement).value);
       refresh();
     });
 
-    chronotypeSelect.addEventListener("change", (e) => {
-      state.chronotype = e.target.value;
+    chronotypeSelectHidden?.addEventListener("change", () => {
+      state.chronotype = chronotypeSelectHidden.value;
       refresh();
     });
 
-    locateBtn.addEventListener("click", () => {
+    locateBtn?.addEventListener("click", () => {
       geoStatus.style.display = "block";
       geoStatus.textContent = "Requesting location…";
       if (!navigator.geolocation) {
@@ -484,6 +646,7 @@ const defaultSolar = computeSolarDay(today, defaultCity.lat, defaultCity.lon, de
       );
     });
 
+    // Initialize from URL if present
     const urlState = readStateFromUrl(location.search);
     if (urlState) {
       state.lat = urlState.lat;
@@ -499,41 +662,271 @@ const defaultSolar = computeSolarDay(today, defaultCity.lat, defaultCity.lon, de
     const matchedCity = CITY_DIRECTORY.find((c) => c.lat === state.lat && c.lon === state.lon && c.timezone === state.tz);
     if (!matchedCity) {
       const city = nearestCity(state.lat, state.lon);
-      citySelect.value = `${city.lat},${city.lon},${city.timezone}`;
+      if (citySelectHidden) citySelectHidden.value = `${city.lat},${city.lon},${city.timezone}`;
     } else {
-      citySelect.value = `${state.lat},${state.lon},${state.tz}`;
+      if (citySelectHidden) citySelectHidden.value = `${state.lat},${state.lon},${state.tz}`;
     }
-    dateInput.value = dateToInput(state.date);
-    chronotypeSelect.value = state.chronotype;
+    if (dateInput) dateInput.value = dateToInput(state.date);
+    if (chronotypeSelectHidden) chronotypeSelectHidden.value = state.chronotype;
 
     refresh();
-  </script>
+  }
+  function boot() {
+    initFacts();
+    initPlanner();
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot);
+  } else {
+    boot();
+  }
 
-  <style>
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-10);
-      align-items: center;
-    }
-    @media (max-width: 900px) {
-      .hero-grid { grid-template-columns: 1fr; }
-      .hero-visual { order: -1; }
-    }
-    .hero-cta {
-      display: flex;
-      gap: var(--space-4);
-      flex-wrap: wrap;
-      margin-top: var(--space-6);
-    }
-    .hero-visual .img-wrap {
-      border-radius: var(--radius-xl);
-      aspect-ratio: 4/3;
-    }
-    .hero-visual .img-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-  </style>
-</Base>
+</script>
+
+<style>
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-10);
+    align-items: center;
+  }
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-visual { order: -1; }
+  }
+  .hero-cta {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    margin-top: var(--space-6);
+  }
+
+  /* CSS Sunrise Scene */
+  .sunrise-scene {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4/3;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .sunrise-sky {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg,
+      #0b0a1a 0%,
+      #151030 25%,
+      #2a1545 45%,
+      #5c3060 60%,
+      #c4724a 75%,
+      #f4b860 85%,
+      #f8d494 92%,
+      #fce8c0 100%
+    );
+    background-size: 100% 100%;
+  }
+  .sunrise-sun {
+    position: absolute;
+    bottom: 12%;
+    left: 30%;
+    width: min(120px, 20%);
+    height: min(120px, 20%);
+    background: radial-gradient(circle at 50% 50%, #fffaeb 0%, #f8d494 30%, #f4b860 60%, transparent 72%);
+    border-radius: 50%;
+    box-shadow: 0 0 80px 20px rgba(244,184,96,0.4), 0 0 160px 60px rgba(244,184,96,0.15);
+    transform: translateY(-30%);
+    animation: sunriseBreathe 6s ease-in-out infinite;
+  }
+  @keyframes sunriseBreathe {
+    0%, 100% { box-shadow: 0 0 80px 20px rgba(244,184,96,0.4), 0 0 160px 60px rgba(244,184,96,0.15); }
+    50% { box-shadow: 0 0 100px 30px rgba(244,184,96,0.5), 0 0 200px 80px rgba(244,184,96,0.2); }
+  }
+  .sunrise-glow {
+    position: absolute;
+    bottom: 0;
+    left: 15%;
+    right: 45%;
+    height: 40%;
+    background: radial-gradient(ellipse at 50% 100%, rgba(244,184,96,0.25) 0%, transparent 70%);
+  }
+  .sunrise-horizon {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 18%;
+    background: linear-gradient(180deg, transparent 0%, rgba(12,9,24,0.3) 30%, rgba(6,4,15,0.7) 70%, var(--bg-0) 100%);
+  }
+  .sunrise-waves {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 18%;
+  }
+  .wave {
+    position: absolute;
+    bottom: 0;
+    left: -100%;
+    width: 300%;
+    height: 100%;
+    opacity: 0.15;
+    border-radius: 50% 50% 0 0;
+  }
+  .wave-1 {
+    background: rgba(244,184,96,0.3);
+    animation: waveDrift 8s ease-in-out infinite;
+  }
+  .wave-2 {
+    background: rgba(248,212,148,0.2);
+    animation: waveDrift 10s ease-in-out infinite reverse;
+    bottom: 5%;
+  }
+  .wave-3 {
+    background: rgba(108,226,216,0.15);
+    animation: waveDrift 12s ease-in-out infinite;
+    bottom: 8%;
+  }
+  @keyframes waveDrift {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(5%); }
+  }
+
+  /* Facts Carousel */
+  .facts-carousel {
+    background: var(--bg-2);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    max-width: 680px;
+    margin-inline: auto;
+    text-align: center;
+    transition: border-color 0.3s ease;
+  }
+  .facts-carousel:hover {
+    border-color: rgba(244,184,96,0.25);
+  }
+  .facts-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+  .facts-icon { font-size: 1.2em; }
+  .facts-label {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--accent-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .facts-counter {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--ink-4);
+    margin-left: auto;
+  }
+  .facts-text {
+    font-size: var(--text-base);
+    color: var(--ink-1);
+    line-height: 1.6;
+    min-height: 3.2em;
+    margin-bottom: var(--space-5);
+  }
+  .facts-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+  }
+  .facts-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--line-strong);
+    background: transparent;
+    color: var(--ink-3);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .facts-btn:hover {
+    border-color: var(--accent-gold-dim);
+    color: var(--accent-gold);
+    background: rgba(244,184,96,0.08);
+  }
+  .facts-dots {
+    display: flex;
+    gap: var(--space-2);
+  }
+  .facts-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ink-4);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .facts-dot.active {
+    background: var(--accent-gold);
+    box-shadow: 0 0 6px rgba(244,184,96,0.4);
+    width: 18px;
+    border-radius: 3px;
+  }
+
+  /* Seasonal chart */
+  .seasonal-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 80px;
+    padding: var(--space-2) var(--space-1);
+  }
+  .seasonal-bar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 6px;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    background: var(--bg-4);
+    min-height: 20px;
+    transition: flex 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    position: relative;
+  }
+  .seasonal-bar span {
+    font-size: var(--text-xs);
+    color: var(--ink-3);
+    font-weight: 500;
+  }
+  #bar-winter { background: linear-gradient(180deg, var(--accent-sky), rgba(111,140,255,0.3)); }
+  #bar-equinox { background: linear-gradient(180deg, var(--accent-cyan), rgba(108,226,216,0.3)); }
+  #bar-summer { background: linear-gradient(180deg, var(--accent-gold), rgba(244,184,96,0.3)); }
+  #bar-autumn { background: linear-gradient(180deg, var(--accent-amber), rgba(255,154,74,0.3)); }
+
+  /* Melatonin chart */
+  .melatonin-chart {
+    position: relative;
+    margin-top: var(--space-1);
+  }
+  .melatonin-svg {
+    width: 100%;
+    height: 44px;
+    display: block;
+  }
+  .melatonin-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--space-1);
+    font-size: var(--text-xs);
+    color: var(--ink-4);
+    font-family: var(--font-mono);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sunrise-sun { animation: none; }
+    .wave { animation: none; }
+  }
+</style>

@@ -222,4 +222,8 @@ export function computeSolarDay(
   };
 }
 
-export { formatTime, formatDate };
+function minutesFromMidnight(date: Date): number {
+  return date.getUTCHours() * 60 + date.getUTCMinutes();
+}
+
+export { formatTime, formatDate, minutesFromMidnight };

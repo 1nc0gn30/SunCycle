@@ -1,15 +1,3 @@
-/**
- * Lightweight geolocation + IANA timezone resolver.
- *
- * - Browser Geolocation API (with explicit consent).
- * - Timezone from Intl.DateTimeFormat().resolvedOptions().timeZone
- *   (no API call needed — modern browsers ship a tz database).
- * - Lat/lon -> nearest city lookup from a small static dataset, so
- *   the static pages can be useful without GPS.
- *
- * No network calls. No paid APIs.
- */
-
 export interface GeoGuess {
   lat: number;
   lon: number;
@@ -28,6 +16,10 @@ export const CITY_DIRECTORY: GeoGuess[] = [
   { lat: 47.6062, lon: -122.3321, city: "Seattle", region: "WA", country: "US", timezone: "America/Los_Angeles" },
   { lat: 37.7749, lon: -122.4194, city: "San Francisco", region: "CA", country: "US", timezone: "America/Los_Angeles" },
   { lat: 39.9526, lon: -75.1652, city: "Philadelphia", region: "PA", country: "US", timezone: "America/New_York" },
+  { lat: 42.3601, lon: -71.0589, city: "Boston", region: "MA", country: "US", timezone: "America/New_York" },
+  { lat: 32.7157, lon: -117.1611, city: "San Diego", region: "CA", country: "US", timezone: "America/Los_Angeles" },
+  { lat: 39.7392, lon: -104.9903, city: "Denver", region: "CO", country: "US", timezone: "America/Denver" },
+  { lat: 25.7617, lon: -80.1918, city: "Miami", region: "FL", country: "US", timezone: "America/New_York" },
   { lat: 51.5074, lon: -0.1278, city: "London", region: "England", country: "UK", timezone: "Europe/London" },
   { lat: 48.8566, lon: 2.3522, city: "Paris", region: "Île-de-France", country: "FR", timezone: "Europe/Paris" },
   { lat: 52.5200, lon: 13.4050, city: "Berlin", region: "Berlin", country: "DE", timezone: "Europe/Berlin" },
@@ -41,9 +33,12 @@ export const CITY_DIRECTORY: GeoGuess[] = [
   { lat: 1.3521, lon: 103.8198, city: "Singapore", region: "Singapore", country: "SG", timezone: "Asia/Singapore" },
   { lat: 19.0760, lon: 72.8777, city: "Mumbai", region: "Maharashtra", country: "IN", timezone: "Asia/Kolkata" },
   { lat: 28.6139, lon: 77.2090, city: "New Delhi", region: "Delhi", country: "IN", timezone: "Asia/Kolkata" },
+  { lat: 13.7563, lon: 100.5018, city: "Bangkok", region: "Bangkok", country: "TH", timezone: "Asia/Bangkok" },
   { lat: -33.8688, lon: 151.2093, city: "Sydney", region: "NSW", country: "AU", timezone: "Australia/Sydney" },
   { lat: -37.8136, lon: 144.9631, city: "Melbourne", region: "VIC", country: "AU", timezone: "Australia/Melbourne" },
+  { lat: -31.9505, lon: 115.8605, city: "Perth", region: "WA", country: "AU", timezone: "Australia/Perth" },
   { lat: -22.9068, lon: -43.1729, city: "Rio de Janeiro", region: "RJ", country: "BR", timezone: "America/Sao_Paulo" },
+  { lat: -23.5505, lon: -46.6333, city: "São Paulo", region: "SP", country: "BR", timezone: "America/Sao_Paulo" },
   { lat: -34.6037, lon: -58.3816, city: "Buenos Aires", region: "BA", country: "AR", timezone: "America/Argentina/Buenos_Aires" },
   { lat: 19.4326, lon: -99.1332, city: "Mexico City", region: "CDMX", country: "MX", timezone: "America/Mexico_City" },
   { lat: 43.6532, lon: -79.3832, city: "Toronto", region: "ON", country: "CA", timezone: "America/Toronto" },
@@ -56,10 +51,15 @@ export const CITY_DIRECTORY: GeoGuess[] = [
   { lat: 64.1466, lon: -21.9426, city: "Reykjavík", region: "Capital", country: "IS", timezone: "Atlantic/Reykjavik" },
   { lat: 25.2048, lon: 55.2708, city: "Dubai", region: "Dubai", country: "AE", timezone: "Asia/Dubai" },
   { lat: -26.2041, lon: 28.0473, city: "Johannesburg", region: "Gauteng", country: "ZA", timezone: "Africa/Johannesburg" },
+  { lat: -33.9249, lon: 18.4241, city: "Cape Town", region: "WC", country: "ZA", timezone: "Africa/Johannesburg" },
   { lat: 30.0444, lon: 31.2357, city: "Cairo", region: "Cairo", country: "EG", timezone: "Africa/Cairo" },
+  { lat: 52.3676, lon: 4.9041, city: "Amsterdam", region: "North Holland", country: "NL", timezone: "Europe/Amsterdam" },
+  { lat: 48.2082, lon: 16.3738, city: "Vienna", region: "Vienna", country: "AT", timezone: "Europe/Vienna" },
+  { lat: 50.0755, lon: 14.4378, city: "Prague", region: "Prague", country: "CZ", timezone: "Europe/Prague" },
+  { lat: 47.4979, lon: 19.0402, city: "Budapest", region: "Budapest", country: "HU", timezone: "Europe/Budapest" },
+  { lat: 41.0082, lon: 28.9784, city: "Istanbul", region: "Istanbul", country: "TR", timezone: "Europe/Istanbul" },
 ];
 
-/** Great-circle distance in kilometres. */
 function haversineKm(a: { lat: number; lon: number }, b: { lat: number; lon: number }): number {
   const R = 6371;
   const dLat = (b.lat - a.lat) * DEG;
@@ -72,42 +72,23 @@ function haversineKm(a: { lat: number; lon: number }, b: { lat: number; lon: num
 
 const DEG = Math.PI / 180;
 
-/**
- * Find the nearest known city to a given lat/lon. Always returns a
- * match (falls back to the closest entry, which is fine for UX).
- */
 export function nearestCity(lat: number, lon: number): GeoGuess {
   let best = CITY_DIRECTORY[0];
   let bestKm = Infinity;
   for (const c of CITY_DIRECTORY) {
     const km = haversineKm({ lat, lon }, { lat: c.lat, lon: c.lon });
-    if (km < bestKm) {
-      bestKm = km;
-      best = c;
-    }
+    if (km < bestKm) { bestKm = km; best = c; }
   }
   return best;
 }
 
-/**
- * Estimate a sensible IANA timezone from longitude alone.
- * -15° per hour offset, plus half-hour TZ skips at known edges.
- * Useful as a fallback when the browser's Intl DB is unavailable.
- */
 export function guessTimezoneFromLongitude(lon: number): string {
   const offsetHours = Math.round(lon / 15);
   if (offsetHours === 0) return "Etc/UTC";
   return `Etc/GMT${offsetHours > 0 ? "-" : "+"}${Math.abs(offsetHours)}`;
 }
 
-/**
- * Build a stable URL string for shareable deep-links.
- */
 export function buildShareUrl(lat: number, lon: number, tz: string): string {
-  const params = new URLSearchParams({
-    lat: lat.toFixed(4),
-    lon: lon.toFixed(4),
-    tz,
-  });
+  const params = new URLSearchParams({ lat: lat.toFixed(4), lon: lon.toFixed(4), tz });
   return `/?${params.toString()}`;
 }
