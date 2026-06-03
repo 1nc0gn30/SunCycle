@@ -1,0 +1,2 @@
+# Netlify _redirects — final safety net for unknown / future routes.
+# Static, prerendered site: every route resolves to a file. Nothing to redirect.

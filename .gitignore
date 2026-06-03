@@ -1,0 +1,79 @@
+# ─────────────────────────────────────────────
+# SunCycle — Great .gitignore
+# Astro 5 · TypeScript · Netlify · Node
+# ─────────────────────────────────────────────
+
+## 1. Build & generated output
+# Astro build output
+dist/
+# Astro dev cache
+.astro/
+# Netlify CLI local builds
+.netlify/
+# TypeScript build info
+*.tsbuildinfo
+
+## 2. Dependencies
+node_modules/
+
+## 3. Environment & secrets
+.env
+.env.*
+!.env.example
+
+## 4. Generated assets
+# Images downloaded by scripts/download-images.sh
+public/images/
+
+## 5. Logs & temp files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.tmp/
+tmp/
+*.tmp
+
+## 6. OS files
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+# Linux
+*~
+.nfs*
+
+## 7. Editors & IDEs
+# VS Code
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+# JetBrains
+.idea/
+*.iml
+*.iws
+# Vim / Neovim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+Session.vim
+Sessionx.vim
+.netrwhist
+# Emacs
+*~
+\#*\#
+.\#*
+# Sublime
+*.sublime-project
+*.sublime-workspace

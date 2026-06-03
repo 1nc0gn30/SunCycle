@@ -1,0 +1,43 @@
+# SunCycle — ai.txt
+
+This file is a concise, machine-friendly summary of what SunCycle is and is not. It is intended for AI assistants, search-engine crawlers, and other automated readers that need to summarise the site in a single pass.
+
+## Summary
+
+SunCycle (https://suncycle.app) is a free, static, fully prerendered website that converts a user's real-world latitude, longitude, and IANA timezone into a personal circadian light schedule. It is built on real solar geometry and published photobiology research. It uses no third-party APIs, no AI calls, no accounts, and no backend.
+
+## Key facts
+
+- Stack: Astro 5, TypeScript, vanilla CSS. Minimal client-side JavaScript for interactivity.
+- Output: fully prerendered static HTML per page. Compressed HTML, prefetch on hover.
+- SEO: per-page title, description, canonical, OG tags, JSON-LD WebSite schema, sitemap.xml, robots.txt, manifest.webmanifest, RSS feed, llm.txt, ai.txt.
+- Privacy: no cookies, no third-party scripts, no analytics, no server-side storage. Geolocation is handled entirely in the browser with explicit consent.
+- Deploy: Netlify. `netlify.toml` configures build command, publish dir, pretty URLs, and asset processing.
+
+## Computed facts (per user)
+
+For a given (lat, lon, tz) and the current day-of-year, SunCycle computes:
+
+- sunrise, sunset, solar noon
+- civil dawn, civil dusk
+- golden hour (morning, evening) — sun elevation -4° to +6°
+- blue hour (morning, evening) — sun elevation -6° to -4°
+- daylight length
+- a four-window light prescription (morning bright light, daylight maintenance, evening dim-down, blue-light cutoff) anchored to the user's actual sun times
+
+## Sources
+
+- NOAA / Spencer low-precision solar position algorithm
+- CIE S 026:2018 (melanopic-EDI)
+- Brainard et al. 2001 / 2015 (melanopsin action spectrum)
+- Provencio et al. 2002 (retinal ganglion cells containing melanopsin)
+- Zeitzer et al. 2000 (evening light phase shift)
+- Figueiro 2017 (morning light intervention)
+- Pauley 2004 (daylight amplitude)
+- Roenneberg et al. 2003 / 2007 (Munich Chronotype Questionnaire)
+
+## What SunCycle is not
+
+- Not a medical device. Not a substitute for a clinician's advice.
+- Not a shift-work planner in version 1.0.
+- Not a weather-aware planner. Outdoor lux ranges assume clear-to-overcast conditions.

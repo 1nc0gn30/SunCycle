@@ -1,0 +1,89 @@
+---
+import { CITY_DIRECTORY } from "../lib/geo";
+---
+<form id="loc-form" class="card" method="get" action="/">
+  <h3 style="margin-top:0">Set your location</h3>
+  <p class="muted">No account, no tracking, no API calls. Everything runs in your browser.</p>
+
+  <div class="row">
+    <div class="field">
+      <label for="lat">Latitude</label>
+      <input id="lat" name="lat" type="number" inputmode="decimal" step="0.0001" min="-90" max="90" placeholder="e.g. 40.7128" required />
+    </div>
+    <div class="field">
+      <label for="lon">Longitude</label>
+      <input id="lon" name="lon" type="number" inputmode="decimal" step="0.0001" min="-180" max="180" placeholder="e.g. -74.0060" required />
+    </div>
+  </div>
+  <div class="field">
+    <label for="tz">Timezone (IANA)</label>
+    <input id="tz" name="tz" type="text" placeholder="e.g. America/New_York" required />
+  </div>
+  <div class="field">
+    <label for="city">…or pick a city</label>
+    <select id="city">
+      <option value="">— select —</option>
+      {CITY_DIRECTORY.map((c) => (
+        <option value={`${c.lat},${c.lon},${c.timezone}`}>{c.city}, {c.country}</option>
+      ))}
+    </select>
+  </div>
+  <div class="cta-row" style="display:flex; gap:0.5rem; flex-wrap:wrap">
+    <button class="button" type="submit">Generate my day</button>
+    <button class="button secondary" type="button" id="use-gps">Use my location</button>
+  </div>
+  <p class="tiny muted" id="gps-status" aria-live="polite" style="margin-top:0.5rem"></p>
+</form>
+
+<script is:inline>
+  (function () {
+    const form = document.getElementById("loc-form");
+    const lat = document.getElementById("lat");
+    const lon = document.getElementById("lon");
+    const tz = document.getElementById("tz");
+    const city = document.getElementById("city");
+    const gps = document.getElementById("use-gps");
+    const status = document.getElementById("gps-status");
+
+    // Pre-fill from URL.
+    const u = new URL(location.href);
+    const uLat = u.searchParams.get("lat");
+    const uLon = u.searchParams.get("lon");
+    const uTz = u.searchParams.get("tz");
+    if (uLat) lat.value = uLat;
+    if (uLon) lon.value = uLon;
+    if (uTz) tz.value = uTz;
+    if (!uTz) {
+      try { tz.value = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (e) {}
+    }
+
+    city.addEventListener("change", function () {
+      const v = city.value;
+      if (!v) return;
+      const [a, b, c] = v.split(",");
+      lat.value = a;
+      lon.value = b;
+      tz.value = c;
+    });
+
+    gps.addEventListener("click", function () {
+      if (!navigator.geolocation) {
+        status.textContent = "Geolocation not available in this browser.";
+        return;
+      }
+      status.textContent = "Requesting location…";
+      navigator.geolocation.getCurrentPosition(
+        function (pos) {
+          lat.value = pos.coords.latitude.toFixed(4);
+          lon.value = pos.coords.longitude.toFixed(4);
+          tz.value = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+          status.textContent = "Got it. Hit Generate.";
+        },
+        function (err) {
+          status.textContent = "Couldn't get location: " + err.message;
+        },
+        { enableHighAccuracy: false, timeout: 8000, maximumAge: 60_000 }
+      );
+    });
+  })();
+</script>

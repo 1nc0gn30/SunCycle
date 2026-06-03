@@ -1,0 +1,167 @@
+---
+import { computeSolarDay, formatTime } from "../lib/sun";
+import { derivePrescription, type Chronotype } from "../lib/light";
+import { CITY_DIRECTORY, nearestCity, type GeoGuess } from "../lib/geo";
+
+export interface Props {
+  lat: number;
+  lon: number;
+  tz: string;
+  city?: GeoGuess;
+  nowIso: string;
+  offsetMinutes: number;
+  dateLabel: string;
+}
+const { lat, lon, tz, city, nowIso, offsetMinutes, dateLabel } = Astro.props;
+
+const today = new Date();
+const solar = computeSolarDay(today, lat, lon, tz);
+const cityGuess: GeoGuess = city ?? nearestCity(lat, lon);
+const prescription = derivePrescription(solar, "dove" as Chronotype);
+
+function timeOf(d: Date | null): string {
+  return d ? formatTime(d, tz) : "—";
+}
+
+const sunrise = solar.sunrise;
+const sunset = solar.sunset;
+const noon = solar.solarNoon;
+
+const startMs = sunrise ? sunrise.getTime() - 30 * 60_000 : null;
+const endMs = sunset ? sunset.getTime() + 30 * 60_000 : null;
+function pct(d: Date | null): number {
+  if (!d || startMs == null || endMs == null) return 0;
+  return Math.max(0, Math.min(100, ((d.getTime() - startMs) / (endMs - startMs)) * 100));
+}
+
+function winPct(start: Date | null, end: Date | null): { left: number; right: number } | null {
+  if (!start || !end || startMs == null || endMs == null) return null;
+  return { left: pct(start), right: pct(end) };
+}
+
+const morningBar = winPct(prescription[0].start, prescription[0].end);
+const middayBar  = winPct(prescription[1].start, prescription[1].end);
+const eveningBar = winPct(prescription[2].start, prescription[2].end);
+const blueBar    = winPct(prescription[3].start, prescription[3].end);
+const sunPct     = pct(noon);
+
+const startLabel = sunrise ? formatTime(new Date(sunrise.getTime() - 30 * 60_000), tz) : "—";
+const endLabel   = sunset ? formatTime(new Date(sunset.getTime() + 30 * 60_000), tz) : "—";
+---
+<section class="planner">
+  <div class="container">
+    <div class="card">
+      <div class="planner-grid">
+        <div>
+          <h2 style="margin-top:0">Today's light prescription</h2>
+          <p class="muted">
+            <strong>{cityGuess.city}</strong>{cityGuess.region ? `, ${cityGuess.region}` : ""} · {lat.toFixed(2)}°, {lon.toFixed(2)}° · {tz}
+          </p>
+          <p class="muted tiny">Computed {dateLabel} from your latitude, longitude, and timezone. No data leaves the browser.</p>
+
+          <div class="skybar" aria-hidden="true">
+            {sunrise && <span class="marker" style={`left:${pct(sunrise)}%`} title="Sunrise"></span>}
+            {sunset && <span class="marker" style={`left:${pct(sunset)}%`} title="Sunset"></span>}
+            <span class="now" style={`left:${sunPct}%`} title="Solar noon"></span>
+          </div>
+          <div class="timeline-axis">
+            <span>{startLabel}</span>
+            <span>sunrise {timeOf(sunrise)}</span>
+            <span>noon {timeOf(noon)}</span>
+            <span>sunset {timeOf(sunset)}</span>
+            <span>{endLabel}</span>
+          </div>
+
+          <div class="hr"></div>
+          <h3 style="margin-bottom:0.6rem">Schedule</h3>
+
+          <div class="window">
+            <div>
+              <h4>Morning bright light</h4>
+              <p>30 minutes of outdoor light within 1h of waking. 1,000–3,000 lux at the eye.</p>
+              <div class="source">Figueiro 2017 · CIE S 026:2018</div>
+            </div>
+            <div class="time">{timeOf(prescription[0].start)} – {timeOf(prescription[0].end)}</div>
+          </div>
+
+          <div class="window">
+            <div>
+              <h4>Daylight maintenance</h4>
+              <p>2h of outdoor light across the day to keep the central oscillator aligned.</p>
+              <div class="source">Pauley 2004 · Figueiro 2017</div>
+            </div>
+            <div class="time">{timeOf(prescription[1].start)} – {timeOf(prescription[1].end)}</div>
+          </div>
+
+          <div class="window">
+            <div>
+              <h4>Evening dim-down</h4>
+              <p>Dim warm lighting in the 2h before sleep. Let melatonin rise.</p>
+              <div class="source">Zeitzer 2000</div>
+            </div>
+            <div class="time">{timeOf(prescription[2].start)} – {timeOf(prescription[2].end)}</div>
+          </div>
+
+          <div class="window">
+            <div>
+              <h4>Blue-light cutoff</h4>
+              <p>Stop high-melanopic screen content and bright white lights 90 min before sleep.</p>
+              <div class="source">CIE S 026:2018</div>
+            </div>
+            <div class="time">{timeOf(prescription[3].start)}</div>
+          </div>
+        </div>
+
+        <div>
+          <h2 style="margin-top:0">Your day, visualised</h2>
+          <p class="muted">A timeline of sun position + the four prescription windows. The sun marker sits at solar noon.</p>
+
+          <div class="timeline" role="img" aria-label="24-hour timeline of light windows">
+            <span class="sun" style={`--sun-pct:${sunPct}%`}></span>
+            <div class="track">
+              {morningBar && <span class="bar morning" style={`left:${morningBar.left}%; right:${100 - morningBar.right}%`}></span>}
+              {middayBar && <span class="bar midday" style={`left:${middayBar.left}%; right:${100 - middayBar.right}%`}></span>}
+              {eveningBar && <span class="bar evening" style={`left:${eveningBar.left}%; right:${100 - eveningBar.right}%`}></span>}
+              {blueBar && <span class="bar blue-off" style={`left:${blueBar.left}%; right:${100 - blueBar.right}%`}></span>}
+            </div>
+          </div>
+          <div class="timeline-axis" aria-hidden="true">
+            <span>{startLabel}</span>
+            <span></span>
+            <span>noon</span>
+            <span></span>
+            <span>{endLabel}</span>
+          </div>
+
+          <div class="legend">
+            <span><i style="background:linear-gradient(90deg,#f4d8a8,#f4b860)"></i>Morning bright light</span>
+            <span><i style="background:linear-gradient(90deg,#6ce28f,#4cc6b8)"></i>Daylight</span>
+            <span><i style="background:linear-gradient(90deg,#8a85a8,#6f8cff)"></i>Evening dim</span>
+            <span><i style="background:#ff7d8a"></i>Blue-light cutoff</span>
+          </div>
+
+          <div class="hr"></div>
+          <h3 style="margin-bottom:0.6rem">Daylight facts</h3>
+          <dl class="kv">
+            <dt>Civil dawn</dt><dd>{timeOf(solar.civilDawn)}</dd>
+            <dt>Sunrise</dt><dd>{timeOf(solar.sunrise)}</dd>
+            <dt>Solar noon</dt><dd>{timeOf(solar.solarNoon)}</dd>
+            <dt>Sunset</dt><dd>{timeOf(solar.sunset)}</dd>
+            <dt>Civil dusk</dt><dd>{timeOf(solar.civilDusk)}</dd>
+            <dt>Daylight</dt><dd>{Math.floor(solar.daylightMinutes / 60)}h {solar.daylightMinutes % 60}m</dd>
+            <dt>Golden hour (AM)</dt><dd>{timeOf(solar.goldenHourMorning?.[0] ?? null)} – {timeOf(solar.goldenHourMorning?.[1] ?? null)}</dd>
+            <dt>Golden hour (PM)</dt><dd>{timeOf(solar.goldenHourEvening?.[0] ?? null)} – {timeOf(solar.goldenHourEvening?.[1] ?? null)}</dd>
+            <dt>Blue hour (AM)</dt><dd>{timeOf(solar.blueHourMorning?.[0] ?? null)} – {timeOf(solar.blueHourMorning?.[1] ?? null)}</dd>
+            <dt>Blue hour (PM)</dt><dd>{timeOf(solar.blueHourEvening?.[0] ?? null)} – {timeOf(solar.blueHourEvening?.[1] ?? null)}</dd>
+          </dl>
+
+          <p class="note">
+            SunCycle computes sunrise, sunset, twilight, and golden/blue hours from your latitude
+            and the day-of-year. The light prescription is a population-level starting point and
+            is not medical advice.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

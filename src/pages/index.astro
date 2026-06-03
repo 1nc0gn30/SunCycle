@@ -1,0 +1,539 @@
+---
+import Base from "../layouts/Base.astro";
+import PollinationsImg from "../components/PollinationsImg.astro";
+import { CITY_DIRECTORY } from "../lib/geo";
+import { CHRONOTYPE_LABELS, type Chronotype } from "../lib/light";
+import { computeSolarDay, formatTime } from "../lib/sun";
+
+const cities = CITY_DIRECTORY;
+const chronotypes: Chronotype[] = ["lark", "dove", "owl"];
+
+const today = new Date();
+const defaultCity = cities[0];
+const defaultSolar = computeSolarDay(today, defaultCity.lat, defaultCity.lon, defaultCity.timezone);
+---
+
+<Base
+  title="SunCycle · Circadian Light Planner"
+  description="Plan your light exposure around real solar geometry. Free, private, zero APIs."
+  canonical="https://suncycle.app/"
+  ogImage="https://suncycle.app/og-default.svg"
+>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-text">
+          <h1 class="fade-in">
+            Light is the oldest <em>medicine</em>.
+          </h1>
+          <p class="lead fade-in fade-in-delay-1">
+            SunCycle builds a personal circadian light schedule from your location, the real sun, and peer-reviewed photobiology. No accounts, no tracking, no paid APIs.
+          </p>
+          <div class="hero-cta fade-in fade-in-delay-2">
+            <a href="#planner" class="btn btn-primary">Build my light plan</a>
+            <a href="/science" class="btn btn-ghost">Read the science →</a>
+          </div>
+        </div>
+        <div class="hero-visual fade-in fade-in-delay-2">
+          <div class="img-wrap">
+            <PollinationsImg
+              prompt="abstract golden sunrise aurora over dark ocean waves, warm amber and deep indigo, cinematic lighting, minimalist digital art, high contrast, no text"
+              width={800}
+              height={600}
+              alt="Abstract golden sunrise aurora over dark ocean"
+              loading="eager"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="section">
+    <div class="container">
+      <div class="stats-row fade-in">
+        <div>
+          <div class="stat-value">24h</div>
+          <div class="stat-label">Circadian cycle</div>
+        </div>
+        <div>
+          <div class="stat-value">480nm</div>
+          <div class="stat-label">ipRGC peak</div>
+        </div>
+        <div>
+          <div class="stat-value">30m</div>
+          <div class="stat-label">Morning bright light</div>
+        </div>
+        <div>
+          <div class="stat-value">0</div>
+          <div class="stat-label">APIs called</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- How it works -->
+  <section class="section">
+    <div class="container">
+      <div class="content-narrow">
+        <h2 class="fade-in" style="text-align: center; margin-bottom: var(--space-8);">
+          How it <em>works</em>
+        </h2>
+      </div>
+      <div class="step-cards fade-in">
+        <div class="step-card">
+          <h4>Choose your location</h4>
+          <p style="color: var(--ink-2); font-size: var(--text-sm);">Pick a city, let your browser locate you, or enter coordinates manually. Your data never leaves the browser.</p>
+        </div>
+        <div class="step-card">
+          <h4>Compute solar events</h4>
+          <p style="color: var(--ink-2); font-size: var(--text-sm);">SunCycle calculates your exact sunrise, sunset, solar noon, twilight, golden hour, and blue hour from real solar geometry.</p>
+        </div>
+        <div class="step-card">
+          <h4>Get your prescription</h4>
+          <p style="color: var(--ink-2); font-size: var(--text-sm);">Receive a four-window light schedule personalized to your chronotype: morning bright light, daylight maintenance, evening dim-down, and blue-light cutoff.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- Planner -->
+  <section class="section" id="planner">
+    <div class="container">
+      <div class="content-narrow">
+        <h2 class="fade-in" style="text-align: center; margin-bottom: var(--space-2);">Your <em>personal</em> light planner</h2>
+        <p class="fade-in" style="text-align: center; color: var(--ink-3); margin-bottom: var(--space-10);">Adjust location, date, and chronotype to see your circadian schedule.</p>
+      </div>
+
+      <div class="planner-grid">
+        <aside class="panel panel-glow fade-in" style="position: sticky; top: 88px;">
+          <h3 style="margin-bottom: var(--space-5); font-size: var(--text-xl);">Your location</h3>
+          <div style="margin-bottom: var(--space-5);">
+            <label class="label" for="city-select">City</label>
+            <select id="city-select" class="input">
+              {cities.map((c) => (
+                <option value={`${c.lat},${c.lon},${c.timezone}`} selected={c.city === defaultCity.city}>
+                  {c.city}, {c.region} · {c.country}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div style="margin-bottom: var(--space-5);">
+            <label class="label" for="date-input">Date</label>
+            <input id="date-input" type="date" class="input" value={defaultSolar.date} />
+          </div>
+
+          <div style="margin-bottom: var(--space-6);">
+            <label class="label" for="chronotype-select">Chronotype</label>
+            <select id="chronotype-select" class="input">
+              {chronotypes.map((ct) => (
+                <option value={ct} selected={ct === "dove"}>{CHRONOTYPE_LABELS[ct]}</option>
+              ))}
+            </select>
+            <p class="note" style="margin-top: var(--space-3);">
+              Not sure? Take the <a href="/chronotype">chronotype quiz</a>.
+            </p>
+          </div>
+
+          <button id="locate-btn" class="btn btn-secondary" style="width: 100%; margin-bottom: var(--space-4);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.7;">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>
+            </svg>
+            Use my location
+          </button>
+
+          <div id="geo-status" class="note" style="display: none;"></div>
+
+          <hr class="section-divider" style="margin-block: var(--space-6);" />
+
+          <div id="share-wrap" class="share" style="display: none;">
+            <span class="label" style="margin: 0;">Share plan</span>
+            <code id="share-url"></code>
+          </div>
+        </aside>
+
+        <div class="fade-in fade-in-delay-1">
+          <div id="results">
+            <div class="panel" style="margin-bottom: var(--space-6);">
+              <h3 style="margin-bottom: var(--space-4); font-size: var(--text-xl);">Solar timeline</h3>
+              <div class="timeline-wrap">
+                <div class="timeline-sun" id="timeline-sun" style="--sun-pct: 50%;"></div>
+                <div class="timeline-track">
+                  <div class="timeline-bar morning" id="bar-morning"></div>
+                  <div class="timeline-bar midday" id="bar-midday"></div>
+                  <div class="timeline-bar evening" id="bar-evening"></div>
+                  <div class="timeline-bar blue-off" id="bar-blue"></div>
+                </div>
+                <div class="timeline-axis">
+                  <span>00:00</span>
+                  <span>06:00</span>
+                  <span>12:00</span>
+                  <span>18:00</span>
+                  <span>24:00</span>
+                </div>
+              </div>
+              <div class="legend">
+                <span><i style="background: var(--accent-gold);"></i> Bright light</span>
+                <span><i style="background: var(--good);"></i> Daylight</span>
+                <span><i style="background: var(--accent-sky);"></i> Dim down</span>
+                <span><i style="background: var(--bad);"></i> Blue cutoff</span>
+              </div>
+            </div>
+
+            <div class="panel" style="margin-bottom: var(--space-6);">
+              <h3 style="margin-bottom: var(--space-4); font-size: var(--text-xl);">Today's light windows</h3>
+              <div id="windows-list"></div>
+            </div>
+
+            <div class="panel">
+              <h3 style="margin-bottom: var(--space-4); font-size: var(--text-xl);">Light quality</h3>
+              <div class="skybar" id="skybar">
+                <div class="marker" id="marker-sunrise" style="left: 25%;"></div>
+                <div class="marker" id="marker-sunset" style="left: 75%;"></div>
+                <div class="now" id="marker-now" style="left: 50%;"></div>
+              </div>
+              <div class="legend">
+                <span>Night</span>
+                <span>Dawn</span>
+                <span>Day</span>
+                <span>Golden</span>
+                <span>Dusk</span>
+                <span>Night</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- Features -->
+  <section class="section">
+    <div class="container">
+      <div class="content-narrow">
+        <h2 class="fade-in" style="text-align: center; margin-bottom: var(--space-2);">
+          Built on <em>physics</em>, not guesswork
+        </h2>
+        <p class="fade-in" style="text-align: center; color: var(--ink-3); margin-bottom: var(--space-10);">
+          Every recommendation is anchored to peer-reviewed photobiology and real solar geometry.
+        </p>
+      </div>
+      <div class="feature-grid fade-in">
+        <div class="panel">
+          <h4>🌅 Solar noon precision</h4>
+          <p style="color: var(--ink-2); font-size: var(--text-sm);">Sunrise, sunset, twilight, golden hour, and blue hour computed from your exact latitude and longitude using the NOAA solar position model.</p>
+        </div>
+        <div class="panel">
+          <h4>🔬 Photobiology-backed</h4>
+          <p style="color: var(--ink-2); font-size: var(--text-sm);">Light prescriptions follow CIE S 026:2018 melanopic-EDI standards and research by Brainard, Figueiro, Zeitzer, and Provencio.</p>
+        </div>
+        <div class="panel">
+          <h4>🦉 Chronotype-aware</h4>
+          <p style="color: var(--ink-2); font-size: var(--text-sm);">Morning lark, dove, or night owl? Your chronotype shifts every window so the schedule matches your biology, not a clock.</p>
+        </div>
+        <div class="panel">
+          <h4>🔒 Zero data collection</h4>
+          <p style="color: var(--ink-2); font-size: var(--text-sm);">No accounts, no cookies, no analytics, no third-party APIs. Your location stays in your browser. Share plans via URL if you choose.</p>
+        </div>
+        <div class="panel">
+          <h4>⚡ Instant deep links</h4>
+          <p style="color: var(--ink-2); font-size: var(--text-sm);">Every plan generates a shareable URL with your coordinates, date, and chronotype. Send it to a friend or save it for later.</p>
+        </div>
+        <div class="panel">
+          <h4>📱 Works everywhere</h4>
+          <p style="color: var(--ink-2); font-size: var(--text-sm);">Fully responsive, works offline after first load, and runs on any device with a modern browser. No app store needed.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- Quote -->
+  <section class="section">
+    <div class="container">
+      <div class="content-narrow fade-in">
+        <blockquote class="blockquote">
+          “Light is the most powerful synchronizer of the human circadian clock. A thirty-minute walk outdoors after sunrise can advance your phase by over an hour.”
+          <cite>— Mariana Figueiro, Lighting Research Center, 2017</cite>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- FAQ -->
+  <section class="section">
+    <div class="container">
+      <div class="content-narrow">
+        <h2 class="fade-in" style="text-align: center; margin-bottom: var(--space-8);">
+          Frequently asked <em>questions</em>
+        </h2>
+        <div class="faq-grid fade-in">
+          <details class="faq">
+            <summary>Is this medical advice?</summary>
+            <div class="faq-body">
+              <p>No. SunCycle is a population-level starting point based on published photobiology research. It is not a substitute for personalized medical advice from a sleep specialist or clinician. If you have a sleep disorder, consult a professional.</p>
+            </div>
+          </details>
+          <details class="faq">
+            <summary>How accurate are the sunrise and sunset times?</summary>
+            <div class="faq-body">
+              <p>SunCycle uses the NOAA low-precision solar position model (Spencer's equations). For non-polar latitudes, it is accurate to within ~1 minute. Polar regions may see larger deviations near solstices.</p>
+            </div>
+          </details>
+          <details class="faq">
+            <summary>What is melanopic-EDI?</summary>
+            <div class="faq-body">
+              <p>Melanopic Equivalent Daylight Illuminance (mel-EDI) is the CIE S 026:2018 standard metric for circadian-effective light. It weights illuminance by the ipRGC action spectrum, which peaks near 480 nm. A 470 nm LED at ~100 lux is roughly 100 melanopic-EDI.</p>
+            </div>
+          </details>
+          <details class="faq">
+            <summary>Does it work for shift workers?</summary>
+            <div class="faq-body">
+              <p>Not yet. Version 1.0 anchors prescriptions to local sunrise and sunset. Shift-work planning is on the roadmap. For now, night-shift workers may benefit from the blue-light cutoff guidance.</p>
+            </div>
+          </details>
+          <details class="faq">
+            <summary>How is my location handled?</summary>
+            <div class="faq-body">
+              <p>Browser geolocation is used only if you explicitly click "Use my location." Coordinates are processed entirely in your browser. We do not run a server, store your location, or use cookies.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="content-narrow fade-in">
+        <h2 style="margin-bottom: var(--space-4);">Ready to align your <em>circadian rhythm</em>?</h2>
+        <p style="color: var(--ink-2); margin-bottom: var(--space-8);">It takes 30 seconds. No account. No tracking. Just light, geometry, and you.</p>
+        <a href="#planner" class="btn btn-primary" style="font-size: var(--text-lg); padding: var(--space-4) var(--space-8);">Build my light plan</a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    import { computeSolarDay, formatTime } from "../lib/sun.ts";
+    import { derivePrescription } from "../lib/light.ts";
+    import { readStateFromUrl, writeStateToUrl } from "../lib/url-state.ts";
+    import { CITY_DIRECTORY, nearestCity, guessTimezoneFromLongitude } from "../lib/geo.ts";
+
+    const citySelect = document.getElementById("city-select");
+    const dateInput = document.getElementById("date-input");
+    const chronotypeSelect = document.getElementById("chronotype-select");
+    const locateBtn = document.getElementById("locate-btn");
+    const geoStatus = document.getElementById("geo-status");
+    const windowsList = document.getElementById("windows-list");
+    const shareWrap = document.getElementById("share-wrap");
+    const shareUrl = document.getElementById("share-url");
+
+    const sun = document.getElementById("timeline-sun");
+    const barMorning = document.getElementById("bar-morning");
+    const barMidday = document.getElementById("bar-midday");
+    const barEvening = document.getElementById("bar-evening");
+    const barBlue = document.getElementById("bar-blue");
+    const markerSunrise = document.getElementById("marker-sunrise");
+    const markerSunset = document.getElementById("marker-sunset");
+    const markerNow = document.getElementById("marker-now");
+
+    let state = {
+      lat: CITY_DIRECTORY[0].lat,
+      lon: CITY_DIRECTORY[0].lon,
+      tz: CITY_DIRECTORY[0].timezone,
+      date: new Date(),
+      chronotype: "dove",
+    };
+
+    function parseCity(val) {
+      const [lat, lon, tz] = val.split(",");
+      return { lat: Number(lat), lon: Number(lon), tz };
+    }
+
+    function dateToInput(d) {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function inputToDate(str) {
+      const [y, m, d] = str.split("-").map(Number);
+      return new Date(y, m - 1, d);
+    }
+
+    function minutesFromMidnight(d) {
+      return d.getHours() * 60 + d.getMinutes();
+    }
+
+    function pct(minutes) {
+      return Math.max(0, Math.min(100, (minutes / 1440) * 100));
+    }
+
+    function updateTimeline(solar, prescription) {
+      const sunriseMin = solar.sunrise ? minutesFromMidnight(solar.sunrise) : 360;
+      const sunsetMin = solar.sunset ? minutesFromMidnight(solar.sunset) : 1080;
+      const noonMin = minutesFromMidnight(solar.solarNoon);
+
+      sun.style.setProperty("--sun-pct", `${pct(noonMin)}%`);
+
+      const mStart = prescription[0].start ? minutesFromMidnight(prescription[0].start) : sunriseMin;
+      const mEnd = prescription[0].end ? minutesFromMidnight(prescription[0].end) : mStart + 30;
+      barMorning.style.left = `${pct(mStart)}%`;
+      barMorning.style.width = `${pct(mEnd) - pct(mStart)}%`;
+
+      const mdStart = prescription[1].start ? minutesFromMidnight(prescription[1].start) : noonMin - 60;
+      const mdEnd = prescription[1].end ? minutesFromMidnight(prescription[1].end) : noonMin + 60;
+      barMidday.style.left = `${pct(mdStart)}%`;
+      barMidday.style.width = `${pct(mdEnd) - pct(mdStart)}%`;
+
+      const eStart = prescription[2].start ? minutesFromMidnight(prescription[2].start) : sunsetMin + 120;
+      const eEnd = prescription[2].end ? minutesFromMidnight(prescription[2].end) : eStart + 120;
+      barEvening.style.left = `${pct(eStart)}%`;
+      barEvening.style.width = `${pct(eEnd) - pct(eStart)}%`;
+
+      const bStart = prescription[3].start ? minutesFromMidnight(prescription[3].start) : sunsetMin + 150;
+      barBlue.style.left = `${pct(bStart)}%`;
+      barBlue.style.width = `${100 - pct(bStart)}%`;
+
+      markerSunrise.style.left = `${pct(sunriseMin)}%`;
+      markerSunset.style.left = `${pct(sunsetMin)}%`;
+      const nowMin = minutesFromMidnight(new Date());
+      markerNow.style.left = `${pct(nowMin)}%`;
+    }
+
+    function renderWindows(prescription) {
+      windowsList.innerHTML = prescription.map((w, i) => `
+        <div class="window-card" style="animation: fadeInUp 0.5s ease ${i * 0.08}s both;">
+          <div>
+            <h4>${w.label}</h4>
+            <p>${w.rationale}</p>
+            <div class="source">Source: ${w.source} · Target: ${w.targetLux[0]}–${w.targetLux[1]} lux</div>
+          </div>
+          <div class="time">
+            ${w.start ? formatTime(w.start, state.tz) : "–"}
+            ${w.end ? ` → ${formatTime(w.end, state.tz)}` : ""}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function refresh() {
+      const solar = computeSolarDay(state.date, state.lat, state.lon, state.tz);
+      const prescription = derivePrescription(solar, state.chronotype);
+      updateTimeline(solar, prescription);
+      renderWindows(prescription);
+
+      const url = writeStateToUrl({ lat: state.lat, lon: state.lon, tz: state.tz }, `${location.origin}${location.pathname}`);
+      const full = `${url}&date=${dateToInput(state.date)}&chronotype=${state.chronotype}`;
+      shareUrl.textContent = full;
+      shareWrap.style.display = "flex";
+    }
+
+    citySelect.addEventListener("change", (e) => {
+      const c = parseCity(e.target.value);
+      state.lat = c.lat;
+      state.lon = c.lon;
+      state.tz = c.tz;
+      refresh();
+    });
+
+    dateInput.addEventListener("change", (e) => {
+      state.date = inputToDate(e.target.value);
+      refresh();
+    });
+
+    chronotypeSelect.addEventListener("change", (e) => {
+      state.chronotype = e.target.value;
+      refresh();
+    });
+
+    locateBtn.addEventListener("click", () => {
+      geoStatus.style.display = "block";
+      geoStatus.textContent = "Requesting location…";
+      if (!navigator.geolocation) {
+        geoStatus.textContent = "Geolocation not supported by this browser.";
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          state.lat = pos.coords.latitude;
+          state.lon = pos.coords.longitude;
+          state.tz = Intl.DateTimeFormat().resolvedOptions().timeZone || guessTimezoneFromLongitude(state.lon);
+          const city = nearestCity(state.lat, state.lon);
+          geoStatus.textContent = `Located near ${city.city}, ${city.country}.`;
+          refresh();
+        },
+        (err) => {
+          geoStatus.textContent = "Location denied. Using selected city.";
+        }
+      );
+    });
+
+    const urlState = readStateFromUrl(location.search);
+    if (urlState) {
+      state.lat = urlState.lat;
+      state.lon = urlState.lon;
+      state.tz = urlState.tz;
+      const params = new URLSearchParams(location.search);
+      const d = params.get("date");
+      const ct = params.get("chronotype");
+      if (d) state.date = inputToDate(d);
+      if (ct && ["lark", "dove", "owl"].includes(ct)) state.chronotype = ct;
+    }
+
+    const matchedCity = CITY_DIRECTORY.find((c) => c.lat === state.lat && c.lon === state.lon && c.timezone === state.tz);
+    if (!matchedCity) {
+      const city = nearestCity(state.lat, state.lon);
+      citySelect.value = `${city.lat},${city.lon},${city.timezone}`;
+    } else {
+      citySelect.value = `${state.lat},${state.lon},${state.tz}`;
+    }
+    dateInput.value = dateToInput(state.date);
+    chronotypeSelect.value = state.chronotype;
+
+    refresh();
+  </script>
+
+  <style>
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-10);
+      align-items: center;
+    }
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-visual { order: -1; }
+    }
+    .hero-cta {
+      display: flex;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+      margin-top: var(--space-6);
+    }
+    .hero-visual .img-wrap {
+      border-radius: var(--radius-xl);
+      aspect-ratio: 4/3;
+    }
+    .hero-visual .img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+</Base>

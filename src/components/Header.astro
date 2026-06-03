@@ -1,0 +1,50 @@
+---
+export interface Props {
+  current?: string;
+}
+const { current = "/" } = Astro.props;
+const links: { href: string; label: string }[] = [
+  { href: "/", label: "Planner" },
+  { href: "/science", label: "Science" },
+  { href: "/chronotype", label: "Chronotype" },
+  { href: "/about", label: "About" },
+];
+---
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>SunCycle</span>
+    </a>
+    <button class="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="site-nav">
+      <span class="hamburger"></span>
+    </button>
+    <nav class="site-nav" id="site-nav" aria-label="Primary">
+      <div class="nav-links">
+        {links.map((l) => (
+          <a href={l.href} aria-current={current === l.href ? "page" : undefined}>
+            {l.label}
+          </a>
+        ))}
+      </div>
+    </nav>
+  </div>
+  <script is:inline>
+    (function() {
+      var btn = document.querySelector('.mobile-menu-toggle');
+      var nav = document.getElementById('site-nav');
+      if (!btn || !nav) return;
+      btn.addEventListener('click', function() {
+        var expanded = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', String(!expanded));
+        nav.classList.toggle('open');
+      });
+      nav.querySelectorAll('a').forEach(function(a) {
+        a.addEventListener('click', function() {
+          btn.setAttribute('aria-expanded', 'false');
+          nav.classList.remove('open');
+        });
+      });
+    })();
+  </script>
+</header>

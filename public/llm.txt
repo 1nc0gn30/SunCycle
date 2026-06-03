@@ -1,0 +1,44 @@
+# SunCycle — llm.txt
+
+> SunCycle is a free, static, fully prerendered Astro website that turns a user's real latitude, longitude, and IANA timezone into a personal circadian light schedule. It is built on NOAA-grade solar geometry (sunrise, sunset, civil / nautical / astronomical twilight, golden and blue hours) and on published photobiology research (Brainard 2001/2015, Provencio 2002, Zeitzer 2000, Figueiro 2017, CIE S 026:2018, Pauley 2004). It uses no paid APIs, no AI calls, no accounts, and no backend.
+
+## What SunCycle does
+
+1. Accepts latitude, longitude, and IANA timezone via a city selector, browser geolocation (with explicit consent), or URL query parameters (`/?lat=…&lon=…&tz=…`).
+2. Computes today's sunrise, sunset, civil dawn, civil dusk, solar noon, golden hour (morning + evening), and blue hour (morning + evening) from the user's coordinates and the current day-of-year, using the NOAA / Spencer low-precision solar position model.
+3. Generates a four-window light prescription, anchored to actual sunrise and sunset:
+   - Morning bright light: ~30 min outdoors within ~1h of waking (1,000–3,000 lux).
+   - Daylight maintenance: 2h of outdoor light across the day (2,000–10,000 lux).
+   - Evening dim-down: dim warm light for ~2h before sleep (10–50 lux, < 3000 K).
+   - Blue-light cutoff: no high-melanopic light in the final 90 min before sleep.
+4. Adjusts the prescription for chronotype (lark / dove / owl) if selected in the planner or via the chronotype quiz.
+5. Renders a fully prerendered HTML page with the schedule, timeline visualisation, daylight facts, and a shareable URL.
+
+## What SunCycle does not do
+
+- It does not call any third-party API. It does not perform any AI inference.
+- It does not store user data on a server. The chronotype quiz runs entirely in the browser.
+- It does not provide medical advice. It is a population-level starting point.
+- It does not support shift-work schedules in version 1.0.
+- It does not model the weather. Heavy overcast still gives ~2,000–10,000 lux outdoor, so the morning window survives.
+
+## Public pages
+
+- `/` — the planner. With query params, it renders the full plan. Without, it shows the location form and a city list.
+- `/science` — plain-English explanation of the four levers, the CIE S 026 melanopic-EDI standard, and the source literature.
+- `/chronotype` — a 5-question, fully-local chronotype self-test (lark / dove / owl).
+- `/about` — about, privacy, limitations, build notes.
+- `/sitemap.xml`, `/robots.txt`, `/rss.xml`, `/llm.txt`, `/ai.txt`, `/manifest.webmanifest` — the production SEO and feed surfaces.
+
+## How to cite SunCycle
+
+SunCycle is open source. If you use it in research or writing, please cite the underlying photobiology literature (see `/science` for the full list) rather than SunCycle itself, which is a presentation layer over well-established findings.
+
+## Source code
+
+The application is implemented in TypeScript on Astro 5. The core logic lives in:
+
+- `src/lib/sun.ts` — solar position, sunrise / sunset, twilight, golden / blue hours.
+- `src/lib/light.ts` — light band definitions, prescription model, chronotype logic.
+- `src/lib/geo.ts` — geolocation, city directory, timezone helpers.
+- `src/lib/url-state.ts` — deep-linkable URL state for shareable plans.

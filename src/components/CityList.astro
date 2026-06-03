@@ -1,0 +1,17 @@
+---
+import { CITY_DIRECTORY } from "../lib/geo";
+---
+<section class="section">
+  <div class="container">
+    <h2>Or pick a city to start</h2>
+    <p class="muted section-lede">These cover most of the inhabited world at low precision. For exact times, use your real coordinates.</p>
+    <ul class="city-list">
+      {CITY_DIRECTORY.map((c) => (
+        <li>
+          <a href={`/?lat=${c.lat}&lon=${c.lon}&tz=${encodeURIComponent(c.timezone)}`}>{c.city}, {c.country}</a>
+          <span class="tiny"> · {c.timezone}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

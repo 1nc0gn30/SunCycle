@@ -1,0 +1,17 @@
+{
+  "name": "suncycle",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SunCycle: a personal circadian light scheduler built on real solar geometry and photobiology. No paid APIs, no AI calls, just physics and physiology.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^5.18.2"
+  }
+}

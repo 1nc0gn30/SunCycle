@@ -1,0 +1,17 @@
+{
+  "name": "SunCycle",
+  "short_name": "SunCycle",
+  "description": "Personal circadian light scheduler. Real solar geometry, real photobiology, no paid APIs.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0a17",
+  "theme_color": "#0b0a17",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

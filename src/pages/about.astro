@@ -1,0 +1,150 @@
+---
+import Base from "../layouts/Base.astro";
+import PollinationsImg from "../components/PollinationsImg.astro";
+import { CITY_DIRECTORY } from "../lib/geo";
+---
+
+<Base
+  title="About · SunCycle"
+  description="How SunCycle works, what data it uses, and where the science comes from."
+  canonical="https://suncycle.app/about"
+  ogImage="https://suncycle.app/og-default.svg"
+>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-text">
+          <h1 class="fade-in">About <em>SunCycle</em></h1>
+          <p class="lead fade-in fade-in-delay-1">
+            SunCycle is a free, static, science-backed circadian light scheduler. Built on real solar geometry and photobiology. No paid APIs, no tracking, no accounts.
+          </p>
+        </div>
+        <div class="hero-visual fade-in fade-in-delay-2">
+          <div class="img-wrap">
+            <PollinationsImg
+              prompt="abstract earth globe with sun rays and circadian cycle rings, golden light beams, dark space background, minimalist scientific art, no text"
+              width={800}
+              height={600}
+              alt="Abstract earth with circadian cycle rings"
+              loading="eager"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container" style="margin-bottom: var(--space-24);">
+    <div class="content-narrow">
+      <!-- Philosophy -->
+      <article class="panel fade-in" style="margin-bottom: var(--space-8);">
+        <h2 style="margin-bottom: var(--space-4);">Philosophy</h2>
+        <p style="margin-bottom: var(--space-4); color: var(--ink-2);">
+          Sleep is not a luxury — it is a biological necessity. Yet modern life has decoupled us from the light-dark cycle that evolved to regulate our circadian rhythms. SunCycle exists to bridge that gap: a simple, free tool that translates real solar data into actionable light guidance.
+        </p>
+        <p style="color: var(--ink-2);">
+          We believe that the best health tools are <strong>private by default</strong>, <strong>science-backed</strong>, and <strong>accessible to everyone</strong>. No paywalls. No data mining. Just physics, physiology, and a clean interface.
+        </p>
+      </article>
+
+      <!-- How it works -->
+      <article class="panel fade-in" style="margin-bottom: var(--space-8);">
+        <h2 style="margin-bottom: var(--space-4);">How it works</h2>
+        <p style="margin-bottom: var(--space-4); color: var(--ink-2);">
+          SunCycle computes your local solar events using the NOAA solar position algorithm adapted for browser JavaScript. It calculates sunrise, sunset, solar noon, twilight windows, and golden/blue hours from your latitude, longitude, and IANA timezone.
+        </p>
+        <p style="margin-bottom: var(--space-4); color: var(--ink-2);">
+          Then it maps those solar events to peer-reviewed light-exposure recommendations: morning bright light, midday daylight maintenance, evening dim-down, and a blue-light cutoff before sleep. Your chronotype shifts the windows to match your biology, not an arbitrary clock.
+        </p>
+        <div class="tech-stack">
+          <span class="pill">Astro 5</span>
+          <span class="pill">TypeScript</span>
+          <span class="pill">Vanilla CSS</span>
+          <span class="pill">NOAA Solar Algorithm</span>
+          <span class="pill">CIE S 026:2018</span>
+        </div>
+      </article>
+
+      <!-- Privacy -->
+      <article class="panel fade-in" style="margin-bottom: var(--space-8);">
+        <h2 style="margin-bottom: var(--space-4);">Privacy</h2>
+        <p style="margin-bottom: var(--space-4); color: var(--ink-2);">
+          <strong>No data leaves your browser.</strong> SunCycle is a static site. Geolocation, if you grant it, is handled entirely by your browser. We do not run a server, do not store your location, and do not use cookies or analytics.
+        </p>
+        <p style="color: var(--ink-2);">
+          Sharing a plan creates a URL with lat/lon/tz in the query string. Anyone with the link can see your coordinates. Do not share if that concerns you.
+        </p>
+      </article>
+
+      <!-- Sources -->
+      <article class="panel fade-in" style="margin-bottom: var(--space-8);">
+        <h2 style="margin-bottom: var(--space-4);">Sources</h2>
+        <ul style="color: var(--ink-2); line-height: 1.8; padding-left: var(--space-6); margin-bottom: var(--space-4);">
+          <li>Brainard <em>et al.</em> (2001, 2015) — ipRGC spectral sensitivity and melanopic lux.</li>
+          <li>CIE S 026:2018 — melanopic Equivalent Daylight Illuminance (mel-EDI).</li>
+          <li>Figueiro <em>et al.</em> (2017) — morning light for circadian phase advancement.</li>
+          <li>Zeitzer <em>et al.</em> (2000) — evening light avoidance and phase response.</li>
+          <li>Provencio <em>et al.</em> (2002) — melanopsin discovery in ipRGCs.</li>
+          <li>Pauley <em>et al.</em> (2004) — daylight exposure and sleep quality.</li>
+        </ul>
+        <p style="color: var(--ink-3); font-size: var(--text-sm);">
+          See <a href="/science">The Science</a> for a deeper dive into each topic and a research timeline.
+        </p>
+      </article>
+
+      <!-- Cities -->
+      <article class="panel fade-in" style="margin-bottom: var(--space-8);">
+        <h2 style="margin-bottom: var(--space-4);">Cities in the directory</h2>
+        <p style="margin-bottom: var(--space-5); color: var(--ink-2);">
+          {CITY_DIRECTORY.length} cities with known lat/lon/timezone. If your city is missing, use <em>Use my location</em> or pick the nearest match.
+        </p>
+        <ul class="city-list" style="color: var(--ink-2); font-size: var(--text-sm);">
+          {CITY_DIRECTORY.map((c) => (
+            <li>{c.city}, {c.country}</li>
+          ))}
+        </ul>
+      </article>
+
+      <!-- Limitations -->
+      <article class="panel fade-in">
+        <h2 style="margin-bottom: var(--space-4);">Limitations</h2>
+        <ul style="color: var(--ink-2); line-height: 1.8; padding-left: var(--space-6);">
+          <li>The solar algorithm is accurate to ~1 minute for non-polar latitudes. Polar regions near solstice may see larger deviations.</li>
+          <li>Light prescriptions are population-level guidance, not personalized medical advice.</li>
+          <li>Weather is not modeled. Overcast outdoor light is still 2,000–10,000 lux — sufficient for entrainment.</li>
+          <li>Shift work is not supported in v1.0. The planner anchors to local sunrise and sunset.</li>
+          <li>Chronotype quiz is a simplified 5-question screen, not a full MCTQ assessment.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <style>
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-10);
+      align-items: center;
+    }
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-visual { order: -1; }
+    }
+    .hero-visual .img-wrap {
+      border-radius: var(--radius-xl);
+      aspect-ratio: 4/3;
+    }
+    .hero-visual .img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .tech-stack {
+      display: flex;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+      margin-top: var(--space-4);
+    }
+  </style>
+</Base>

@@ -1,0 +1,14 @@
+---
+export interface Props {
+  prompt: string;
+  width: number;
+  height: number;
+  alt: string;
+  class?: string;
+  loading?: "eager" | "lazy";
+}
+const { prompt, width, height, alt, class: className = "", loading = "lazy" } = Astro.props;
+const encoded = encodeURIComponent(prompt);
+const src = `https://image.pollinations.ai/prompt/${encoded}?width=${width}&height=${height}&nologo=true`;
+---
+<img src={src} alt={alt} width={width} height={height} loading={loading} class={className} decoding="async" />

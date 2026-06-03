@@ -1,0 +1,273 @@
+---
+import Base from "../layouts/Base.astro";
+import PollinationsImg from "../components/PollinationsImg.astro";
+import { LIGHT_BANDS } from "../lib/light";
+---
+
+<Base
+  title="The Science · SunCycle"
+  description="How light drives circadian rhythm. Peer-reviewed photobiology, simplified."
+  canonical="https://suncycle.app/science"
+  ogImage="https://suncycle.app/og-default.svg"
+>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-text">
+          <h1 class="fade-in">The <em>science</em> of light</h1>
+          <p class="lead fade-in fade-in-delay-1">
+            Your circadian clock is a 24-hour molecular oscillator in nearly every cell. Light is its primary zeitgeber — the force that keeps it aligned with the solar day.
+          </p>
+        </div>
+        <div class="hero-visual fade-in fade-in-delay-2">
+          <div class="img-wrap">
+            <PollinationsImg
+              prompt="abstract light spectrum gradient from deep blue through cyan to warm amber and gold, representing melanopic sensitivity and circadian rhythm, dark background, scientific art, no text"
+              width={800}
+              height={600}
+              alt="Abstract light spectrum representing melanopic sensitivity"
+              loading="eager"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container" style="margin-bottom: var(--space-24);">
+    <div class="content-narrow">
+      <!-- Melanopsin -->
+      <article class="panel fade-in" style="margin-bottom: var(--space-8);">
+        <div class="article-header">
+          <div class="article-visual">
+            <div class="img-wrap">
+              <PollinationsImg
+                prompt="cross section of human eye showing retina and ipRGC nerve cells glowing cyan blue, scientific medical illustration, dark background, high detail, anatomical diagram, no text"
+                width={400}
+                height={400}
+                alt="Cross section of human eye showing ipRGC cells"
+              />
+            </div>
+          </div>
+          <div class="article-text">
+            <h2 style="margin-bottom: var(--space-4);">Melanopsin & ipRGCs</h2>
+            <p style="margin-bottom: var(--space-4); color: var(--ink-2);">
+              In 2002, Provencio discovered melanopsin — a photopigment in a small subset of retinal ganglion cells (ipRGCs). These cells do not help you see images. They measure ambient light and send a direct signal to the suprachiasmatic nucleus, the brain's master clock.
+            </p>
+            <p style="color: var(--ink-2);">
+              The ipRGC action spectrum peaks near <strong>480 nm</strong> — cyan blue. A 470 nm LED at ~100 lux is roughly 100 melanopic-EDI, enough to shift phase. This is the basis for the CIE S 026:2018 standard used throughout SunCycle.
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- Light bands -->
+      <article class="panel fade-in" style="margin-bottom: var(--space-8);">
+        <h2 style="margin-bottom: var(--space-4);">Light illuminance bands</h2>
+        <p style="margin-bottom: var(--space-6); color: var(--ink-2);">
+          Not all light is equal for circadian entrainment. Here are the population-level bands SunCycle uses to guide recommendations.
+        </p>
+        <div class="light-bands">
+          {LIGHT_BANDS.map((band, i) => (
+            <div class="window-card" style={`animation: fadeInUp 0.5s ease ${i * 0.06}s both;`}>
+              <div style="display: flex; align-items: center; gap: var(--space-3);">
+                <span style={`width: 18px; height: 18px; border-radius: 6px; background: ${band.color}; display: inline-block; box-shadow: 0 0 12px ${band.color}40;`}></span>
+                <div>
+                  <h4>{band.name}</h4>
+                  <p>{band.description}</p>
+                </div>
+              </div>
+              <div style="font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-3);">
+                {band.luxRange[0].toLocaleString()}–{band.luxRange[1].toLocaleString()} lux
+              </div>
+            </div>
+          ))}
+        </div>
+      </article>
+
+      <!-- Phase response -->
+      <article class="panel fade-in" style="margin-bottom: var(--space-8);">
+        <div class="article-header article-header-reverse">
+          <div class="article-visual">
+            <div class="img-wrap">
+              <PollinationsImg
+                prompt="human brain with suprachiasmatic nucleus highlighted in golden light, scientific visualization, dark background, neural pathways glowing, minimalist, no text"
+                width={400}
+                height={400}
+                alt="Human brain with suprachiasmatic nucleus highlighted"
+              />
+            </div>
+          </div>
+          <div class="article-text">
+            <h2 style="margin-bottom: var(--space-4);">Phase response curve</h2>
+            <p style="margin-bottom: var(--space-4); color: var(--ink-2);">
+              The human circadian clock responds to light differently at different times of day. Bright light in the <strong>morning advances</strong> the clock (you fall asleep earlier). Bright light in the <strong>evening delays</strong> it (you fall asleep later).
+            </p>
+            <p style="color: var(--ink-2);">
+              This is the phase-response curve (PRC). Figueiro's 2017 work shows that ~30 minutes of 1,000+ lux light within an hour of waking is the strongest practical lever for phase advancement — more effective than evening light avoidance alone.
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- Evening dim -->
+      <article class="panel fade-in" style="margin-bottom: var(--space-8);">
+        <h2 style="margin-bottom: var(--space-4);">Evening dim-down</h2>
+        <p style="margin-bottom: var(--space-4); color: var(--ink-2);">
+          Zeitzer (2000) demonstrated that light avoidance before bed produces phase shifts comparable to morning bright light. Melanopsin integration is slow — minutes, not milliseconds — so even brief screen checks at night accumulate.
+        </p>
+        <p style="color: var(--ink-2);">
+          SunCycle recommends a 90-minute blue-light cutoff and 1–2 hours of dim, warm light before your target sleep time. The threshold is roughly <strong>< 30 lux</strong> at the eye for high-melanopic sources.
+        </p>
+      </article>
+
+      <!-- Timeline -->
+      <article class="panel fade-in" style="margin-bottom: var(--space-8);">
+        <h2 style="margin-bottom: var(--space-4);">Research timeline</h2>
+        <div class="research-timeline">
+          <div class="research-item">
+            <div class="research-year">1998</div>
+            <div class="research-text">
+              <strong>Berson &amp; Brown</strong> — Discovery of a novel retinal photoreceptor distinct from rods and cones, setting the stage for ipRGC research.
+            </div>
+          </div>
+          <div class="research-item">
+            <div class="research-year">2000</div>
+            <div class="research-text">
+              <strong>Zeitzer &amp; Dijk</strong> — Demonstrated that evening light avoidance produces significant phase shifts. Foundation for the dim-down recommendation.
+            </div>
+          </div>
+          <div class="research-item">
+            <div class="research-year">2002</div>
+            <div class="research-text">
+              <strong>Provencio &amp; Berson</strong> — Identified melanopsin in ipRGCs. The photopigment responsible for non-visual light responses.
+            </div>
+          </div>
+          <div class="research-item">
+            <div class="research-year">2004</div>
+            <div class="research-text">
+              <strong>Pauley &amp; Roenneberg</strong> — Showed that daylight exposure amplitude correlates with sleep quality and circadian stability.
+            </div>
+          </div>
+          <div class="research-item">
+            <div class="research-year">2015</div>
+            <div class="research-text">
+              <strong>Brainard &amp; Lockley</strong> — Refined melanopsin action spectrum. Confirmed 480 nm as the peak wavelength for circadian light responses.
+            </div>
+          </div>
+          <div class="research-item">
+            <div class="research-year">2017</div>
+            <div class="research-text">
+              <strong>Figueiro &amp; Rea</strong> — Demonstrated that 30 minutes of morning bright light is the strongest practical lever for phase advancement.
+            </div>
+          </div>
+          <div class="research-item">
+            <div class="research-year">2018</div>
+            <div class="research-text">
+              <strong>CIE S 026</strong> — International standard for melanopic Equivalent Daylight Illuminance. The modern metric for circadian-effective light.
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- CTA -->
+      <article class="panel panel-glow fade-in">
+        <div style="text-align: center;">
+          <h3 style="margin-bottom: var(--space-3);">Want the full prescription?</h3>
+          <p style="color: var(--ink-2); margin-bottom: var(--space-6);">See how these principles translate into a personal light schedule for your location.</p>
+          <a href="/" class="btn btn-primary">Build my light plan →</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <style>
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-10);
+      align-items: center;
+    }
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-visual { order: -1; }
+    }
+    .hero-visual .img-wrap {
+      border-radius: var(--radius-xl);
+      aspect-ratio: 4/3;
+    }
+    .hero-visual .img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .article-header {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: var(--space-8);
+      align-items: center;
+    }
+    .article-header-reverse {
+      grid-template-columns: 1.5fr 1fr;
+    }
+    .article-header-reverse .article-visual { order: 2; }
+    @media (max-width: 900px) {
+      .article-header, .article-header-reverse {
+        grid-template-columns: 1fr;
+      }
+      .article-header-reverse .article-visual { order: -1; }
+    }
+    .article-visual .img-wrap {
+      border-radius: var(--radius-lg);
+      aspect-ratio: 1;
+    }
+    .article-visual .img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .research-timeline {
+      position: relative;
+      padding-left: var(--space-8);
+    }
+    .research-timeline::before {
+      content: "";
+      position: absolute;
+      left: 12px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: linear-gradient(180deg, var(--accent-gold), var(--accent-sky));
+      border-radius: 2px;
+    }
+    .research-item {
+      position: relative;
+      margin-bottom: var(--space-6);
+      padding-left: var(--space-4);
+    }
+    .research-item::before {
+      content: "";
+      position: absolute;
+      left: -20px;
+      top: 6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent-gold);
+      box-shadow: 0 0 8px rgba(244,184,96,0.4);
+    }
+    .research-year {
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      color: var(--accent-gold);
+      font-weight: 600;
+      margin-bottom: var(--space-1);
+    }
+    .research-text {
+      font-size: var(--text-base);
+      color: var(--ink-2);
+      line-height: 1.6;
+    }
+  </style>
+</Base>

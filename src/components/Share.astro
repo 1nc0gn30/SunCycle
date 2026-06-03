@@ -1,0 +1,35 @@
+---
+export interface Props {
+  lat: number;
+  lon: number;
+  tz: string;
+}
+const { lat, lon, tz } = Astro.props;
+const url = new URL(Astro.url.href);
+url.search = `?lat=${lat.toFixed(4)}&lon=${lon.toFixed(4)}&tz=${encodeURIComponent(tz)}`;
+---
+<div class="card share" id="share">
+  <div style="flex:1 1 280px; min-width:240px">
+    <h3 style="margin:0 0 0.3em">Share this day</h3>
+    <p class="muted" style="margin:0">Send the link to your partner, roommate, or therapist. Same location = same schedule.</p>
+    <p style="margin:0.5rem 0 0"><code id="share-url">{url.toString()}</code></p>
+  </div>
+  <div style="display:flex; flex-direction:column; gap:0.5rem">
+    <button class="button" type="button" id="copy-btn">Copy link</button>
+    <a class="button secondary" href={`mailto:?subject=My%20SunCycle&body=${encodeURIComponent(url.toString())}`}>Email</a>
+  </div>
+</div>
+<script is:inline>
+  (function () {
+    const btn = document.getElementById("copy-btn");
+    const out = document.getElementById("share-url");
+    if (!btn || !out) return;
+    btn.addEventListener("click", function () {
+      const text = out.textContent || location.href;
+      navigator.clipboard?.writeText(text).then(
+        function () { btn.textContent = "Copied ✓"; setTimeout(() => (btn.textContent = "Copy link"), 1600); },
+        function () { btn.textContent = "Copy failed"; }
+      );
+    });
+  })();
+</script>
