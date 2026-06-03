@@ -4,7 +4,7 @@ This file is a concise, machine-friendly summary of what SunCycle is and is not.
 
 ## Summary
 
-SunCycle (https://suncycle.app) is a free, static, fully prerendered website that converts a user's real-world latitude, longitude, and IANA timezone into a personal circadian light schedule. It is built on real solar geometry and published photobiology research. It uses no third-party APIs, no AI calls, no accounts, and no backend.
+SunCycle (https://suncycle-day3.netlify.app) is a free, static, fully prerendered website that converts a user's real-world latitude, longitude, and IANA timezone into a personal circadian light schedule. It is built on real solar geometry and published photobiology research. It uses no third-party APIs, no AI calls, no accounts, and no backend.
 
 ## Key facts
 

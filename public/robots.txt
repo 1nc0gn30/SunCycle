@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://suncycle.app/sitemap.xml
+Sitemap: https://suncycle-day3.netlify.app/sitemap.xml

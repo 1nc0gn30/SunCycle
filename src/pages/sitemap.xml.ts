@@ -2,7 +2,7 @@ export const prerender = true;
 
 import type { APIRoute } from "astro";
 
-const SITE = "https://suncycle.app";
+const SITE = "https://suncycle-day3.netlify.app";
 const PAGES = ["", "/science", "/chronotype", "/about"];
 
 export const GET: APIRoute = () => {

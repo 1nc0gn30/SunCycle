@@ -2,7 +2,7 @@ export const prerender = true;
 
 import type { APIRoute } from "astro";
 
-const SITE = "https://suncycle.app";
+const SITE = "https://suncycle-day3.netlify.app";
 
 export const GET: APIRoute = () => {
   const updated = new Date().toUTCString();

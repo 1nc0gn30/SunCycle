@@ -7,7 +7,7 @@
 [![Astro](https://img.shields.io/badge/Astro-5.0-FF5D01?logo=astro&logoColor=white)](https://astro.build)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Netlify](https://img.shields.io/badge/Netlify-Deployed-00C7B7?logo=netlify&logoColor=white)](https://netlify.com)
-[![Zero APIs](https://img.shields.io/badge/APIs-Called%3A%200-success)](https://suncycle.app)
+[![Zero APIs](https://img.shields.io/badge/APIs-Called%3A%200-success)](https://suncycle-day3.netlify.app)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 **Day 3 of the 30 Days 30 Apps Netlify Challenge**  
@@ -216,8 +216,8 @@ const prescription = derivePrescription(solar, 'dove');
 ```typescript
 import { writeStateToUrl, readStateFromUrl } from './src/lib/url-state';
 
-const url = writeStateToUrl({ lat: 40.71, lon: -74.01, tz: 'America/New_York' }, 'https://suncycle.app/');
-// → https://suncycle.app/?lat=40.7100&lon=-74.0100&tz=America/New_York
+const url = writeStateToUrl({ lat: 40.71, lon: -74.01, tz: 'America/New_York' }, 'https://suncycle-day3.netlify.app/');
+// → https://suncycle-day3.netlify.app/?lat=40.7100&lon=-74.0100&tz=America/New_York
 
 const state = readStateFromUrl(location.search);
 // → { lat: 40.71, lon: -74.01, tz: 'America/New_York' }
@@ -322,7 +322,7 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 <div align="center">
 
-**[☀️ Try SunCycle Live](https://suncycle.app)** · Built with light, geometry, and zero APIs
+**[☀️ Try SunCycle Live](https://suncycle-day3.netlify.app)** · Built with light, geometry, and zero APIs
 
 *Part of the 30 Days 30 Apps Netlify Challenge · Day 3*
 

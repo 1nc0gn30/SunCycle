@@ -47,13 +47,13 @@
 
 # Force HTTPS + redirect www to apex.
 [[redirects]]
-  from = "http://suncycle.app/*"
-  to = "https://suncycle.app/:splat"
+  from = "http://suncycle-day3.netlify.app/*"
+  to = "https://suncycle-day3.netlify.app/:splat"
   status = 301
   force = true
 
 [[redirects]]
-  from = "https://www.suncycle.app/*"
-  to = "https://suncycle.app/:splat"
+  from = "https://www.suncycle-day3.netlify.app/*"
+  to = "https://suncycle-day3.netlify.app/:splat"
   status = 301
   force = true
