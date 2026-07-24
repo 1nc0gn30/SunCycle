@@ -1,9 +1,9 @@
 <!-- xonettn -->
 <div align="center">
 
-# ☀️ Suncycle
+# ☀️ ☀️ SunCycle
 
-Day 3 of 30 Apps in 30 Days Netlify Challenge June 2026
+> **Your day, lit like your biology wants it.**
 
 
 ![Astro](https://img.shields.io/badge/Astro-FF5D01?logo=astro&logoColor=white) ![Netlify](https://img.shields.io/badge/Netlify-00C7B7?logo=netlify&logoColor=white)
@@ -13,60 +13,6 @@ Day 3 of 30 Apps in 30 Days Netlify Challenge June 2026
 </div>
 
 ---
-
-## 📋 Overview
-Day 3 of 30 Apps in 30 Days Netlify Challenge June 2026
-
-## 📦 Tech Stack
-- Astro
-- Netlify (deployed)
-
-## 🗂️ Project Structure
-```
-SunCycle/
-  - public
-  - scripts
-  - src
-  (35 files total)
-```
-
-## 🚀 Getting Started
-
-### 📋 Prerequisites
-- Node.js (v18+)
-- npm or yarn
-
-### 📦 Installation
-```bash
-git clone https://github.com/1nc0gn30/SunCycle.git
-cd SunCycle
-npm install
-```
-
-### 💻 Development
-```bash
-npm run dev
-```
-
-### 🔨 Build
-```bash
-npm run build
-```
-
-### ⚙️ Available Scripts
-  npm run dev - astro dev
-  npm run start - astro dev
-  npm run build - astro build
-  npm run preview - astro preview
-  npm run astro - astro
-
-## 📂 Original README
-<details>
-<summary>Click to expand original README</summary>
-
-# ☀️ SunCycle
-
-> **Your day, lit like your biology wants it.**
 
 <div align="center">
 
@@ -393,31 +339,6 @@ MIT License — see [LICENSE](LICENSE) for details.
 *Part of the 30 Days 30 Apps Netlify Challenge · Day 3*
 
 </div>
-
-</details>
-
-## 📝 TODO / Roadmap
-- [ ] Add unit tests
-- [ ] Add LICENSE file
-- [ ] Add Dockerfile for containerized deployment
-- [ ] Add CI/CD pipeline
-- [ ] Add contribution guidelines (CONTRIBUTING.md)
-- [ ] Improve error handling and edge cases
-- [ ] Add environment variable documentation
-- [ ] Update dependencies to latest versions
-- [ ] Add code comments and inline documentation
-
-## 🚀 Deployment
-This project is deployed on Netlify. See netlify.toml for configuration.
-
-## 👤 Author
-**Neal Frazier** - [@AshAmplifies](https://github.com/1nc0gn30)
-
-## 🔗 Links
-- GitHub: https://github.com/1nc0gn30/SunCycle
-
----
-*This README was enhanced as part of the neals-projects-2026 batch update.*
 
 ---
 
