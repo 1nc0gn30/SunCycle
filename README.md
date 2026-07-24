@@ -1,15 +1,27 @@
-# SunCycle
+<!-- xonettn -->
+<div align="center">
+
+# ☀️ Suncycle
 
 Day 3 of 30 Apps in 30 Days Netlify Challenge June 2026
 
-## Overview
+
+![Astro](https://img.shields.io/badge/Astro-FF5D01?logo=astro&logoColor=white) ![Netlify](https://img.shields.io/badge/Netlify-00C7B7?logo=netlify&logoColor=white)
+
+![Deploy](https://img.shields.io/badge/Deployed-Netlify-00C7B7?logo=netlify&logoColor=white)
+
+</div>
+
+---
+
+## 📋 Overview
 Day 3 of 30 Apps in 30 Days Netlify Challenge June 2026
 
-## Tech Stack
+## 📦 Tech Stack
 - Astro
 - Netlify (deployed)
 
-## Project Structure
+## 🗂️ Project Structure
 ```
 SunCycle/
   - public
@@ -18,37 +30,37 @@ SunCycle/
   (35 files total)
 ```
 
-## Getting Started
+## 🚀 Getting Started
 
-### Prerequisites
+### 📋 Prerequisites
 - Node.js (v18+)
 - npm or yarn
 
-### Installation
+### 📦 Installation
 ```bash
 git clone https://github.com/1nc0gn30/SunCycle.git
 cd SunCycle
 npm install
 ```
 
-### Development
+### 💻 Development
 ```bash
 npm run dev
 ```
 
-### Build
+### 🔨 Build
 ```bash
 npm run build
 ```
 
-### Available Scripts
+### ⚙️ Available Scripts
   npm run dev - astro dev
   npm run start - astro dev
   npm run build - astro build
   npm run preview - astro preview
   npm run astro - astro
 
-## Original README
+## 📂 Original README
 <details>
 <summary>Click to expand original README</summary>
 
@@ -384,7 +396,7 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 </details>
 
-## TODO / Roadmap
+## 📝 TODO / Roadmap
 - [ ] Add unit tests
 - [ ] Add LICENSE file
 - [ ] Add Dockerfile for containerized deployment
@@ -395,14 +407,22 @@ MIT License — see [LICENSE](LICENSE) for details.
 - [ ] Update dependencies to latest versions
 - [ ] Add code comments and inline documentation
 
-## Deployment
+## 🚀 Deployment
 This project is deployed on Netlify. See netlify.toml for configuration.
 
-## Author
+## 👤 Author
 **Neal Frazier** - [@AshAmplifies](https://github.com/1nc0gn30)
 
-## Links
+## 🔗 Links
 - GitHub: https://github.com/1nc0gn30/SunCycle
 
 ---
 *This README was enhanced as part of the neals-projects-2026 batch update.*
+
+---
+
+<div align="center">
+
+**[xonettn]** · Built by [Neal Frazier](https://github.com/1nc0gn30) · [@AshAmplifies](https://twitter.com/AshAmplifies)
+
+</div>
